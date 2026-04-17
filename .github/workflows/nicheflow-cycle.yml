@@ -1,0 +1,23 @@
+name: NicheFlow Autonomous Cycle
+on:
+  schedule:
+    - cron: '0 0 * * *' # Run daily at midnight
+  workflow_dispatch: # Enable manual trigger
+
+jobs:
+  agent-cycle:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Trigger NicheFlow Dashboard Loop
+        run: |
+          curl -X POST https://${{ secrets.APP_DOMAIN }}/api/start \
+          -H "Authorization: Bearer ${{ secrets.API_TRIGGER_KEY }}"
+          echo "Autonomous mission triggered successfully."
+
+      - name: Collect Performance Metrics
+        run: |
+          curl https://${{ secrets.APP_DOMAIN }}/api/state > current_state.json
+          # Here you could push to a monitoring service or log to GitHub

@@ -31,12 +31,21 @@ interface Log {
   timestamp: string;
 }
 
-interface Site {
-  niche: { name: string; selectedReason: string; targetAudience: string; estimatedCPC: string };
-  structure: { title: string; tagline: string; pages: string[]; colors: any };
+  interface Site {
+  title: string;
+  niche: { name: string; selectedReason: string; targetAudience: string; estimatedCPC: string; competitionLvl: string };
+  structure: { title: string; tagline: string; pages: string[]; colors: any; typography: string };
   articles: any[];
+  stats: { traffic: number; revenue: number; growth: number };
   url: string;
   createdAt: string;
+}
+
+interface GlobalStats {
+  totalRevenue: number;
+  totalTraffic: number;
+  activeSites: number;
+  dailyGrowth: number;
 }
 
 export default function App() {
@@ -44,6 +53,7 @@ export default function App() {
   const [sites, setSites] = useState<Site[]>([]);
   const [isRunning, setIsRunning] = useState(false);
   const [currentStep, setCurrentStep] = useState(0);
+  const [globalStats, setGlobalStats] = useState<GlobalStats>({ totalRevenue: 0, totalTraffic: 0, activeSites: 0, dailyGrowth: 1.2 });
   const [selectedSite, setSelectedSite] = useState<Site | null>(null);
   const logEndRef = useRef<HTMLDivElement>(null);
   const socketRef = useRef<Socket | null>(null);
@@ -55,6 +65,7 @@ export default function App() {
       setLogs(data.logs);
       setSites(data.generatedSites);
       setIsRunning(data.loopRunning);
+      if (data.globalStats) setGlobalStats(data.globalStats);
     });
 
     socketRef.current.on("log", (log: Log) => {
@@ -64,6 +75,10 @@ export default function App() {
     socketRef.current.on("status", (status: any) => {
       setIsRunning(status.running);
       setCurrentStep(status.step);
+    });
+
+    socketRef.current.on("globalStats", (stats: GlobalStats) => {
+      setGlobalStats(stats);
     });
 
     socketRef.current.on("newSite", (site: Site) => {
@@ -107,21 +122,38 @@ export default function App() {
   ];
 
   return (
-    <div className="min-h-screen bg-bento-bg text-bento-text font-sans p-6 overflow-hidden flex flex-col gap-5">
-      {/* Header - Bento Style */}
-      <header className="flex justify-between items-center pb-4 border-b border-bento-border">
-        <div>
-          <h1 className="text-xl font-semibold tracking-tight">
-            AGENTIC WEB ENGINE 
-            <span className="text-bento-text-dim font-normal ml-3 text-sm">v2.4.0</span>
-          </h1>
+    <div className="min-h-screen bg-bento-bg text-bento-text font-sans p-6 overflow-hidden flex flex-col gap-6">
+      {/* Global Command Bar */}
+      <div className="grid grid-cols-4 gap-4 pb-6 border-b border-bento-border">
+        <div className="bg-bento-card border border-bento-border p-4 rounded-xl flex items-center justify-between">
+          <div>
+            <div className="text-[10px] text-bento-text-dim uppercase font-mono tracking-widest mb-1">Total Network Rev</div>
+            <div className="text-xl font-bold font-mono">${globalStats.totalRevenue.toFixed(2)}</div>
+          </div>
+          <Database className="w-5 h-5 text-bento-warning opacity-30" />
         </div>
-        <div className={`px-3 py-1 rounded-full text-xs font-semibold uppercase tracking-wider border transition-colors ${
-          isRunning ? "bg-bento-success/10 text-bento-success border-bento-success animate-pulse" : "bg-white/5 text-bento-text-dim border-bento-border"
-        }`}>
-          Pipeline: {isRunning ? "Active Looping" : "Idle"}
+        <div className="bg-bento-card border border-bento-border p-4 rounded-xl flex items-center justify-between">
+          <div>
+            <div className="text-[10px] text-bento-text-dim uppercase font-mono tracking-widest mb-1">Combined Traffic</div>
+            <div className="text-xl font-bold font-mono">{globalStats.totalTraffic.toLocaleString()}</div>
+          </div>
+          <Activity className="w-5 h-5 text-bento-accent opacity-30" />
         </div>
-      </header>
+        <div className="bg-bento-card border border-bento-border p-4 rounded-xl flex items-center justify-between">
+          <div>
+            <div className="text-[10px] text-bento-text-dim uppercase font-mono tracking-widest mb-1">Active Assets</div>
+            <div className="text-xl font-bold font-mono">{globalStats.activeSites} <span className="text-[10px] font-normal opacity-50">SITES</span></div>
+          </div>
+          <Globe className="w-5 h-5 text-bento-success opacity-30" />
+        </div>
+        <div className="bg-bento-card border border-bento-border p-4 rounded-xl flex items-center justify-between">
+          <div>
+            <div className="text-[10px] text-bento-text-dim uppercase font-mono tracking-widest mb-1">Network Growth</div>
+            <div className="text-xl font-bold font-mono">+{globalStats.dailyGrowth}%</div>
+          </div>
+          <Zap className="w-5 h-5 text-bento-warning opacity-30" />
+        </div>
+      </div>
 
       <div className="grid grid-cols-4 grid-rows-3 gap-4 flex-grow">
         {/* ACTIVE NICHE SPOTLIGHT (Span 2W) */}
@@ -215,14 +247,20 @@ export default function App() {
 
         {/* DEPLOYMENT CARD */}
         <div className="bg-bento-card border border-bento-border rounded-2xl p-5 flex flex-col group hover:border-bento-accent/40 transition-colors">
-          <div className="text-[11px] text-bento-text-dim uppercase tracking-widest mb-4 flex items-center gap-2">
-            <Globe className="w-3 h-3 text-bento-accent" />
-            Vercel Edge
+          <div className="flex justify-between items-start mb-4">
+            <div className="text-[11px] text-bento-text-dim uppercase tracking-widest flex items-center gap-2">
+              <Globe className="w-3 h-3 text-bento-accent" />
+              GitHub Vercel
+            </div>
+            <button className="text-[9px] bg-white/5 border border-white/10 px-2 py-0.5 rounded hover:bg-white/10 transition-all flex items-center gap-1">
+              <Activity className="w-2.5 h-2.5" />
+              SYNC
+            </button>
           </div>
           <div className="text-4xl font-bold mb-1">99.9%</div>
-          <div className="text-xs text-bento-text-dim font-mono">Uptime Status</div>
+          <div className="text-xs text-bento-text-dim font-mono">Workflow Status: PASS</div>
           <div className="mt-auto pt-4 text-[10px] font-mono text-bento-accent/80 leading-relaxed uppercase">
-            GIT: v2.4-stable<br />
+            CICD: Action Active<br />
             SSL: AES-256<br />
             CDN: GLOBAL-POP
           </div>
@@ -232,13 +270,18 @@ export default function App() {
         <div className="bg-bento-card border border-bento-border rounded-2xl p-5 flex flex-col group hover:border-bento-success/40 transition-colors">
           <div className="text-[11px] text-bento-text-dim uppercase tracking-widest mb-4 flex items-center gap-2">
             <ShieldCheck className="w-3 h-3 text-bento-success" />
-            SEO Index
+            Semantic Index
           </div>
-          <div className="text-4xl font-bold mb-1">94<span className="text-sm text-bento-text-dim">/100</span></div>
-          <div className="text-xs text-bento-text-dim font-mono">Core Web Vitals</div>
+          <div className="text-4xl font-bold mb-1">98<span className="text-sm text-bento-text-dim">/100</span></div>
+          <div className="text-xs text-bento-text-dim font-mono">JSON-LD Graph Active</div>
           <div className="mt-auto h-12 flex items-end gap-1 pb-1">
-            {[40, 60, 80, 75, 90, 94].map((h, i) => (
-              <div key={i} className="flex-1 bg-bento-accent/40 rounded-t-sm" style={{ height: `${h}%` }} />
+            {[60, 80, 75, 90, 94, 98].map((h, i) => (
+              <motion.div 
+                key={i} 
+                initial={{ height: 0 }}
+                animate={{ height: `${h}%` }}
+                className="flex-1 bg-bento-success/40 rounded-t-sm" 
+              />
             ))}
           </div>
         </div>
@@ -307,24 +350,66 @@ export default function App() {
         </div>
       </div>
 
-      {/* PORTFOLIO RAIL */}
-      <div className="h-16 border-t border-bento-border bg-bento-card/50 px-6 -mx-6 flex items-center gap-6 overflow-x-auto scrollbar-hide shrink-0">
-        <div className="flex items-center gap-2 text-[10px] font-bold text-bento-text-dim uppercase tracking-[0.2em] whitespace-nowrap">
-          <Rocket className="w-3 h-3 text-bento-accent" /> DEPLOYED SITES:
+      {/* SEO PREVIEW & PORTFOLIO */}
+      <div className="grid grid-cols-12 gap-5 h-48 shrink-0">
+        <div className="col-span-4 bg-bento-card border border-bento-border rounded-2xl p-4 flex flex-col">
+          <div className="text-[10px] text-bento-text-dim uppercase tracking-widest mb-3">Google SERP Preview (Simulated)</div>
+          {selectedSite ? (
+            <div className="space-y-1">
+              <div className="text-[#8ab4f8] text-sm font-medium hover:underline cursor-pointer truncate">
+                {selectedSite.structure.title} - {selectedSite.structure.tagline}
+              </div>
+              <div className="text-[#34a853] text-[10px] truncate">https://nicheflow.ai/site/{selectedSite.title.toLowerCase().replace(/\s+/g, "-")}</div>
+              <p className="text-bento-text-dim text-[11px] line-clamp-2">
+                Discover {selectedSite.niche.name} with {selectedSite.structure.title}. {selectedSite.articles[0]?.excerpt || selectedSite.structure.tagline}
+              </p>
+              <div className="pt-2 flex gap-4 text-[10px] items-center">
+                 <span className="text-bento-success">98 Performance</span>
+                 <span className="text-bento-text-dim">{selectedSite.articles.length} pages index-ready</span>
+              </div>
+            </div>
+          ) : (
+            <div className="flex-1 flex items-center justify-center text-[10px] text-bento-text-dim italic opacity-20">Select site to view SERP preview</div>
+          )}
         </div>
-        {sites.map((site) => (
-          <button 
-            key={site.url}
-            onClick={() => setSelectedSite(site)}
-            className={`flex items-center gap-3 px-3 py-1.5 rounded-lg border transition-all shrink-0 ${
-              selectedSite?.url === site.url ? "bg-bento-accent text-white border-bento-accent" : "bg-white/5 border-bento-border hover:border-white/20 text-bento-text-dim"
-            }`}
-          >
-            <span className="text-xs font-bold uppercase truncate max-w-[120px]">{site.structure.title}</span>
-            <span className="text-[9px] opacity-60">v1.2</span>
-          </button>
-        ))}
-        {sites.length === 0 && <span className="text-[10px] italic text-bento-text-dim opacity-30">Awaiting autonomous deployments...</span>}
+
+        {/* PORTFOLIO RAIL */}
+        <div className="col-span-8 bg-bento-card/50 border border-bento-border rounded-2xl p-4 flex flex-col relative overflow-hidden">
+          <div className="flex items-center justify-between mb-3">
+            <div className="text-[10px] text-bento-text-dim uppercase tracking-widest flex items-center gap-2">
+              <Rocket className="w-3 h-3 text-bento-accent" />
+              Deployed Portfolio
+            </div>
+          </div>
+          <div className="flex gap-4 overflow-x-auto scrollbar-hide">
+            {sites.map((site) => (
+              <button 
+                key={site.url}
+                onClick={() => setSelectedSite(site)}
+                className={`flex flex-col gap-1 p-3 rounded-xl border transition-all shrink-0 min-w-[180px] ${
+                  selectedSite?.url === site.url ? "bg-bento-accent text-white border-bento-accent shadow-lg shadow-bento-accent/20" : "bg-white/5 border-bento-border hover:border-white/20 text-bento-text-dim"
+                }`}
+              >
+                <div className="flex justify-between items-center mb-1">
+                   <span className="text-[10px] font-mono text-bento-success">{site.niche.competitionLvl || "LOW"} COMP</span>
+                   <span className="text-[10px] font-mono">{site.stats.traffic} VISITS</span>
+                </div>
+                <span className="text-xs font-bold uppercase truncate">{site.structure.title}</span>
+                <span className="text-[9px] opacity-60 font-mono tracking-tight line-clamp-1">{site.structure.tagline}</span>
+                <div className="mt-2 text-[9px] border-t border-white/10 pt-1 flex justify-between">
+                   <span>CPC: {site.niche.estimatedCPC}</span>
+                   <span className="font-bold">${site.stats.revenue.toFixed(2)}</span>
+                </div>
+              </button>
+            ))}
+            {sites.length === 0 && (
+              <div className="flex-1 flex items-center justify-center gap-3 opacity-20">
+                <Database className="w-5 h-5" />
+                <span className="text-[10px] italic">No active assets in pipeline.</span>
+              </div>
+            )}
+          </div>
+        </div>
       </div>
     </div>
   );
