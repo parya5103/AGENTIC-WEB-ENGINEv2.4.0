@@ -1,0 +1,19 @@
+@import "tailwindcss";
+
+@theme {
+  --color-bento-bg: #09090b;
+  --color-bento-card: #18181b;
+  --color-bento-border: #27272a;
+  --color-bento-text: #fafafa;
+  --color-bento-text-dim: #a1a1aa;
+  --color-bento-accent: #3b82f6;
+  --color-bento-success: #22c55e;
+  --color-bento-warning: #f59e0b;
+}
+
+@layer base {
+  body {
+    @apply bg-bento-bg text-bento-text antialiased;
+    font-family: 'Inter', system-ui, sans-serif;
+  }
+}
