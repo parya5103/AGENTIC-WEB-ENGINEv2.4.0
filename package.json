@@ -18,10 +18,13 @@
     "express": "^4.21.2",
     "lucide-react": "^0.546.0",
     "motion": "^12.23.24",
+    "openai": "^6.34.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
+    "recharts": "^3.8.1",
     "socket.io": "^4.8.3",
     "socket.io-client": "^4.8.3",
+    "vercel": "^51.6.1",
     "vite": "^6.2.0"
   },
   "devDependencies": {
