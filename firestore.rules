@@ -1,0 +1,102 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // 0. Global Safety Net
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // --- Helper Primitives (Pillar 3) ---
+    function isSignedIn() { return request.auth != null; }
+    function isOwner(userId) { return isSignedIn() && request.auth.uid == userId; }
+    function incoming() { return request.resource.data; }
+    function existing() { return resource.data; }
+    function isValidId(id) { return id is string && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$'); }
+    function isVerified() { return isSignedIn() && request.auth.token.email_verified == true; }
+    
+    // --- Validation Blueprints (Pillar 2) ---
+    function isValidAsset(data) {
+      return data.size() >= 4 &&
+             data.id is string && data.id.size() <= 128 &&
+             data.ownerId == request.auth.uid &&
+             data.title is string && data.title.size() <= 256 &&
+             data.createdAt is string && data.createdAt.size() <= 64;
+    }
+
+    function isValidLog(data) {
+      return data.size() >= 5 &&
+             data.id is string && data.id.size() <= 128 &&
+             data.ownerId == request.auth.uid &&
+             data.agent is string && data.agent.size() <= 128 &&
+             data.message is string && data.message.size() <= 4096 &&
+             data.type in ['info', 'success', 'error', 'process'] &&
+             data.timestamp is string;
+    }
+
+    function isValidGlobalStats(data) {
+      return data.ownerId == request.auth.uid &&
+             data.totalRevenue is number &&
+             data.totalTraffic is number &&
+             data.activeSites is number;
+    }
+
+    function isValidConfig(data) {
+      return data.ownerId == request.auth.uid &&
+             (data.publisherId == "" || (data.publisherId is string && data.publisherId.size() <= 64)) &&
+             (data.clientId == "" || (data.clientId is string && data.clientId.size() <= 64));
+    }
+
+    // --- User Space Match Blocks ---
+    match /users/{userId} {
+      // Allow user to see their own profile/space
+      allow read: if isOwner(userId);
+      
+      // Pillar 3: ID Poisoning Guard on userId variable
+      function isValidUserPath() { return isValidId(userId); }
+
+      match /assets/{assetId} {
+        allow read: if isOwner(userId); // Single get + Pillar 8: Secure List
+        allow list: if isOwner(userId) && resource.data.ownerId == request.auth.uid; 
+        
+        allow create: if isOwner(userId) && isVerified() && isValidId(assetId) && isValidAsset(incoming()) && (
+          incoming().keys().hasAll(['id', 'ownerId', 'title', 'createdAt'])
+        );
+        
+        // Pillar 4: Tiered Identity Logic + Pillar 9: Immortal Fields
+        allow update: if isOwner(userId) && isVerified() && isValidAsset(incoming()) && (
+          incoming().ownerId == existing().ownerId &&
+          incoming().id == existing().id &&
+          incoming().createdAt == existing().createdAt && (
+            // Action: Stats Update
+            incoming().diff(existing()).affectedKeys().hasOnly(['stats', 'updatedAt']) ||
+            // Action: Deployment Step
+            incoming().diff(existing()).affectedKeys().hasOnly(['isDeployed', 'isDeploying', 'deployProgress', 'deployStatus', 'url', 'updatedAt']) ||
+            // Action: Neural Trace
+            incoming().diff(existing()).affectedKeys().hasOnly(['thinkingTrace', 'updatedAt'])
+          )
+        );
+        
+        allow delete: if isOwner(userId);
+      }
+
+      match /logs/{logId} {
+        allow read: if isOwner(userId);
+        allow list: if isOwner(userId) && resource.data.ownerId == request.auth.uid;
+        
+        allow create: if isOwner(userId) && isVerified() && isValidId(logId) && isValidLog(incoming());
+        allow update: if false; // Pillar 9: Immortal Logs
+        allow delete: if isOwner(userId);
+      }
+
+      match /stats/global {
+        allow read: if isOwner(userId);
+        allow write: if isOwner(userId) && isVerified() && isValidGlobalStats(incoming());
+      }
+
+      match /config/adsense {
+        allow read: if isOwner(userId);
+        allow write: if isOwner(userId) && isVerified() && isValidConfig(incoming());
+      }
+    }
+  }
+}

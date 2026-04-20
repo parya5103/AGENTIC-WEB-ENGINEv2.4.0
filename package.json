@@ -13,9 +13,14 @@
   "dependencies": {
     "@google/genai": "^1.29.0",
     "@tailwindcss/vite": "^4.1.14",
+    "@types/d3": "^7.4.3",
     "@vitejs/plugin-react": "^5.0.4",
+    "clsx": "^2.1.1",
+    "d3": "^7.9.0",
     "dotenv": "^17.2.3",
     "express": "^4.21.2",
+    "firebase": "^12.12.0",
+    "firebase-admin": "^13.8.0",
     "lucide-react": "^0.546.0",
     "motion": "^12.23.24",
     "openai": "^6.34.0",
@@ -24,10 +29,12 @@
     "recharts": "^3.8.1",
     "socket.io": "^4.8.3",
     "socket.io-client": "^4.8.3",
+    "tailwind-merge": "^3.5.0",
     "vercel": "^51.6.1",
     "vite": "^6.2.0"
   },
   "devDependencies": {
+    "@firebase/eslint-plugin-security-rules": "^0.0.1",
     "@types/express": "^4.17.21",
     "@types/node": "^22.14.0",
     "autoprefixer": "^10.4.21",

@@ -49,4 +49,36 @@
   .stat-value {
     @apply text-4xl font-light tracking-tight text-text-main;
   }
+
+  .neural-grid {
+    background-image: radial-gradient(#EAEAEA 1px, transparent 1px);
+    background-size: 24px 24px;
+  }
+
+  .tech-glass {
+    @apply bg-white/70 backdrop-blur-md border border-white/20 shadow-2xl;
+  }
+
+  .thinking-cursor {
+    display: inline-block;
+    width: 6px;
+    height: 12px;
+    background-color: currentColor;
+    animation: blink 1s step-end infinite;
+    @apply ml-1 align-middle;
+  }
+
+  @keyframes blink {
+    from, to { opacity: 1; }
+    50% { opacity: 0; }
+  }
+
+  @keyframes shimmer {
+    0% { transform: translateX(-100%); }
+    100% { transform: translateX(100%); }
+  }
+
+  .animate-shimmer {
+    animation: shimmer 2s infinite linear;
+  }
 }
