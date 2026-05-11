@@ -1,6 +1,5 @@
 {
-  "name": "NicheFlow: AI Content Empire",
-  "description": "A multi-agent autonomous system that discovers trending niches, builds websites, and generates SEO-optimized content in a continuous loop.",
-  "requestFramePermissions": [],
-  "majorCapabilities": []
+  "name": "NicheFlow AI Empire",
+  "description": "Autonomous multi-niche content authority platform with automated category expansion.",
+  "requestFramePermissions": []
 }

@@ -13,14 +13,12 @@ interface StatsGridProps {
   globalStats: {
     totalRevenue: number;
     totalTraffic: number;
-    activeSites: number;
+    activeCategories: number;
     dailyGrowth: number;
-    simulationEnabled?: boolean;
   };
-  toggleSimulation: (enabled: boolean) => void;
 }
 
-export const StatsGrid = ({ globalStats, toggleSimulation }: StatsGridProps) => {
+export const StatsGrid = ({ globalStats }: StatsGridProps) => {
   return (
     <div className="grid grid-cols-12 gap-6">
       {/* Revenue Card */}
@@ -35,15 +33,6 @@ export const StatsGrid = ({ globalStats, toggleSimulation }: StatsGridProps) => 
             <div className="text-right">
               <div className="stat-label mb-1 uppercase tracking-[0.2em]">Empire Value</div>
               <div className="flex items-center gap-2 justify-end">
-                <button 
-                  onClick={() => toggleSimulation(!globalStats.simulationEnabled)}
-                  className={cn(
-                    "px-2 py-0.5 rounded text-[8px] font-black uppercase tracking-widest transition-all",
-                    globalStats.simulationEnabled ? "bg-green-500 text-white" : "bg-gray-100 text-text-muted"
-                  )}
-                >
-                  {globalStats.simulationEnabled ? "Simulation Active" : "Static Mode"}
-                </button>
                 <div className="text-2xl font-black text-text-main leading-none tracking-tight">
                   ${globalStats.totalRevenue.toFixed(2)}
                 </div>
@@ -90,7 +79,7 @@ export const StatsGrid = ({ globalStats, toggleSimulation }: StatsGridProps) => 
         </div>
       </div>
 
-      {/* Sites Card */}
+      {/* Categories Card */}
       <div className="col-span-12 lg:col-span-4 card-minimal p-8 flex flex-col justify-between bg-gray-950 text-white relative overflow-hidden">
         <div className="absolute top-0 right-0 w-32 h-32 bg-brand/20 blur-[60px] -mr-16 -mt-16" />
         <div className="relative z-10">
@@ -99,9 +88,9 @@ export const StatsGrid = ({ globalStats, toggleSimulation }: StatsGridProps) => 
               <Target className="w-6 h-6 text-brand" />
             </div>
             <div className="text-right">
-              <div className="text-[10px] font-bold text-white/40 uppercase tracking-[0.2em] mb-1">Active Silos</div>
+              <div className="text-[10px] font-bold text-white/40 uppercase tracking-[0.2em] mb-1">Developed Clusters</div>
               <div className="text-2xl font-black text-white leading-none tracking-tight">
-                {globalStats.activeSites}
+                {globalStats.activeCategories} <span className="text-brand/40 text-sm">Active</span>
               </div>
             </div>
           </div>
@@ -109,7 +98,7 @@ export const StatsGrid = ({ globalStats, toggleSimulation }: StatsGridProps) => 
           <div className="flex items-center gap-4">
              <div className="flex-grow">
                 <div className="flex justify-between text-[10px] font-bold uppercase tracking-widest mb-1 shadow-sm">
-                   <span className="text-white/40">Load Balance</span>
+                   <span className="text-white/40">Network Cluster Load</span>
                    <span className="text-brand">Optimal</span>
                 </div>
                 <div className="grid grid-cols-12 gap-1">

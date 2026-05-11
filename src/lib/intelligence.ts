@@ -1,6 +1,6 @@
-import { GoogleGenAI, Type } from "@google/genai";
+import { GoogleGenerativeAI, SchemaType } from "@google/generative-ai";
 
-const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY as string });
+const ai = new GoogleGenerativeAI(process.env.GEMINI_API_KEY as string);
 
 export interface InvasionBlueprint {
   niche: string;
@@ -17,30 +17,27 @@ export interface InvasionBlueprint {
 }
 
 export const orchestrateStrategicPlan = async (userNiche: string): Promise<InvasionBlueprint> => {
-  const response = await ai.models.generateContent({
-    model: "gemini-3.1-pro-preview",
-    contents: `Design a high-level "Invasion Blueprint" for a digital empire in the niche: "${userNiche}". 
-    The goal is to dominate through SEO silos, programmatic content, and high-convert affilate funnels.
-    Be extremely specific about the "Market Gap" and "Phase Objectives".`,
-    config: {
+  const model = ai.getGenerativeModel({
+    model: "gemini-1.5-flash",
+    generationConfig: {
       responseMimeType: "application/json",
       responseSchema: {
-        type: Type.OBJECT,
+        type: SchemaType.OBJECT,
         properties: {
-          niche: { type: Type.STRING },
-          strategyName: { type: Type.STRING },
-          marketGapFound: { type: Type.STRING },
-          structuralIntegrityScore: { type: Type.NUMBER },
+          niche: { type: SchemaType.STRING },
+          strategyName: { type: SchemaType.STRING },
+          marketGapFound: { type: SchemaType.STRING },
+          structuralIntegrityScore: { type: SchemaType.NUMBER },
           phases: {
-            type: Type.ARRAY,
+            type: SchemaType.ARRAY,
             items: {
-              type: Type.OBJECT,
+              type: SchemaType.OBJECT,
               properties: {
-                name: { type: Type.STRING },
-                objective: { type: Type.STRING },
-                targetKeywords: { type: Type.ARRAY, items: { type: Type.STRING } },
-                monetizationAngle: { type: Type.STRING },
-                aiResourceAllocation: { type: Type.STRING }
+                name: { type: SchemaType.STRING },
+                objective: { type: SchemaType.STRING },
+                targetKeywords: { type: SchemaType.ARRAY, items: { type: SchemaType.STRING } },
+                monetizationAngle: { type: SchemaType.STRING },
+                aiResourceAllocation: { type: SchemaType.STRING }
               },
               required: ["name", "objective", "targetKeywords"]
             }
@@ -51,8 +48,12 @@ export const orchestrateStrategicPlan = async (userNiche: string): Promise<Invas
     }
   });
 
+  const response = await model.generateContent(`Design a high-level "Invasion Blueprint" for a digital empire in the niche: "${userNiche}". 
+    The goal is to dominate through SEO silos, programmatic content, and high-convert affilate funnels.
+    Be extremely specific about the "Market Gap" and "Phase Objectives".`);
+
   try {
-    return JSON.parse(response.text);
+    return JSON.parse(response.response.text());
   } catch (e) {
     console.error("Blueprint Parser Error:", e);
     throw new Error("Failed to synthesize strategic blueprint.");

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Bell, Monitor, ChevronRight, LogOut, Activity, Wifi, ShieldAlert } from "lucide-react";
 import { cn } from "../lib/utils";
-import type { User } from "firebase/auth";
+import { User } from "../lib/firebase";
 
 interface PageHeaderProps {
   title: string;
@@ -10,9 +10,10 @@ interface PageHeaderProps {
   showConsole: boolean;
   user: User | null;
   onLogout: () => void;
+  onToggleRun: () => void;
 }
 
-export const PageHeader = ({ title, isRunning, onToggleConsole, showConsole, user, onLogout }: PageHeaderProps) => {
+export const PageHeader = ({ title, isRunning, onToggleConsole, showConsole, user, onLogout, onToggleRun }: PageHeaderProps) => {
   const [stability, setStability] = useState(99.4);
   const [latency, setLatency] = useState(24);
 
@@ -69,9 +70,9 @@ export const PageHeader = ({ title, isRunning, onToggleConsole, showConsole, use
       <div className="flex items-center gap-8">
         <div className="flex items-center gap-3 px-5 py-2.5 bg-gray-50 rounded-2xl border border-border shadow-inner group/status">
           <div className={cn(
-            "w-2 h-2 rounded-full ring-4 transition-all duration-500",
+            "w-2 h-2 rounded-full ring-4 transition-all duration-500 cursor-pointer",
             isRunning ? "bg-green-500 ring-green-500/10 animate-pulse" : "bg-gray-300 ring-transparent"
-          )} />
+          )} onClick={onToggleRun} />
           <span className="text-[10px] font-black uppercase tracking-widest text-text-muted group-hover/status:text-text-main transition-colors">
             {isRunning ? "Neural Handshake: Online" : "Uplink Standby"}
           </span>
