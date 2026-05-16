@@ -9,6 +9,7 @@ export const AgentType = {
   UI_UX_DESIGNER: "UI/UX Designer",
   FULL_STACK_DEVELOPER: "Full-Stack Developer",
   CONTENT_WRITER: "Content Writer",
+  IMAGE_GENERATOR: "Image Generator",
   INTERNAL_LINKING: "Internal Linking",
   MONETIZATION: "Monetization Agent",
   AUTOMATION: "Automation Agent",
@@ -142,6 +143,7 @@ export class AgentOrchestrator {
         case AgentType.UI_UX_DESIGNER: result = await this.runUIUXDesigner(task.payload); break;
         case AgentType.FULL_STACK_DEVELOPER: result = await this.runFullStackDeveloper(task.payload); break;
         case AgentType.CONTENT_WRITER: result = await this.runContentWriter(task.payload); break;
+        case AgentType.IMAGE_GENERATOR: result = await this.runImageGenerator(task.payload); break;
         case AgentType.INTERNAL_LINKING: result = await this.runInternalLinking(task.payload); break;
         case AgentType.MONETIZATION: result = await this.runMonetization(task.payload); break;
         case AgentType.AUTOMATION: result = await this.runAutomation(task.payload); break;
@@ -159,13 +161,21 @@ export class AgentOrchestrator {
       const retryCount = (task.retryCount || 0) + 1;
       const status = retryCount >= 3 ? "failed" : "pending";
       
+      let errorMessage = error.message;
+      if (errorMessage?.includes("<!DOCTYPE html>")) {
+        errorMessage = "Provider returned HTML instead of JSON (Possible API misconfiguration or outage).";
+      }
+      if (errorMessage?.length > 200) {
+        errorMessage = errorMessage.substring(0, 197) + "...";
+      }
+
       store.tasks[task.id].status = status;
       store.tasks[task.id].retryCount = retryCount;
-      store.tasks[task.id].error = error.message;
+      store.tasks[task.id].error = errorMessage;
       store.tasks[task.id].updatedAt = new Date().toISOString();
       
-      this.io.emit("taskStatusChange", this.sanitize({ id: task.id, status, error: error.message }));
-      await this.addLog(task.agent, `Task ${task.id} failed: ${error.message}`, "error", userId);
+      this.io.emit("taskStatusChange", this.sanitize({ id: task.id, status, error: errorMessage }));
+      await this.addLog(task.agent, `Task ${task.id} failed: ${errorMessage}`, "error", userId);
     }
   }
 
@@ -174,12 +184,11 @@ export class AgentOrchestrator {
   private async parseAIResponse(response: string) {
     let cleanResponse = response.trim();
     
-    // Attempt to extract JSON from markdown if present
-    const markdownMatch = cleanResponse.match(/```json\s*([\s\S]*?)\s*```/) || cleanResponse.match(/```\s*([\s\S]*?)\s*```/);
+    // Extract JSON from markdown or find the largest balanced block
+    const markdownMatch = cleanResponse.match(/```(?:json)?\s*([\s\S]*?)\s*```/i);
     if (markdownMatch) {
       cleanResponse = markdownMatch[1].trim();
     } else {
-      // If no code blocks, try to find the first '{' and last '}'
       const start = cleanResponse.indexOf('{');
       const end = cleanResponse.lastIndexOf('}');
       if (start !== -1 && end !== -1) {
@@ -190,46 +199,53 @@ export class AgentOrchestrator {
     try {
       return JSON.parse(cleanResponse);
     } catch (e) {
-      // TRUNCATION RECOVERY
-      // If it ends abruptly, try to force close it
-      console.warn("[Parser] Truncated JSON detected, attempting recovery...");
+      console.warn("[Parser] JSON parse failed, attempting recovery...", e);
       
+      // Basic recovery for common truncation/errors
       let fixed = cleanResponse;
-      // Close open strings
-      if ((fixed.split('"').length - 1) % 2 !== 0) fixed += '"';
       
-      // Close open structures (rough heuristic)
-      const openBrackets = (fixed.match(/\[/g) || []).length;
-      const closeBrackets = (fixed.match(/\]/g) || []).length;
-      for (let i = 0; i < openBrackets - closeBrackets; i++) fixed += ']';
+      // Balance braces/brackets
+      const count = (str: string, char: string) => (str.match(new RegExp(`\\${char}`, 'g')) || []).length;
       
-      const openBraces = (fixed.match(/\{/g) || []).length;
-      const closeBraces = (fixed.match(/\}/g) || []).length;
+      const openBraces = count(fixed, '{');
+      const closeBraces = count(fixed, '}');
       for (let i = 0; i < openBraces - closeBraces; i++) fixed += '}';
+      
+      const openBrackets = count(fixed, '[');
+      const closeBrackets = count(fixed, ']');
+      for (let i = 0; i < openBrackets - closeBrackets; i++) fixed += ']';
 
       try {
         return JSON.parse(fixed);
       } catch (e2) {
-        throw new Error("AI returned malformed/truncated JSON: " + response.substring(0, 100) + "...");
+        // Last ditch effort: regex for field extraction if structure is totally broken
+        console.error("[Parser] Recovery failed. Original length:", response.length);
+        throw new Error("AI response was malformed. Please try again.");
       }
     }
   }
 
   private async runTrendResearch(payload: any) {
-    const { userId } = payload;
-    await this.addLog(AgentType.TREND_RESEARCH, "Scanning real-time trends (Google, Reddit, X)...", "process", userId);
-    const prompt = `Act as an elite Trend Research Agent. Discover 3 highly profitable trending niche categories.
-    Each niche MUST have a unique identity.
-    Return STRICT JSON: { "niches": [ { "name": "string", "justification": "string", "cpc": "string", "difficulty": "string", "keywords": ["string"] } ] }`;
+    const { userId, existingNiches = [] } = payload;
+    await this.addLog(AgentType.TREND_RESEARCH, "Scanning real-time global markets for untapped high-CPC opportunities...", "process", userId);
     
-    const response = await generateAIText(prompt, AgentType.TREND_RESEARCH);
+    const existingList = existingNiches.length > 0 ? `CRITICAL: Avoid these existing niches at all costs (DUPLICATES FORBIDDEN): ${existingNiches.join(", ")}.` : "";
+    
+    const prompt = `Act as an elite Trend Research Agent. Discover 3 highly profitable trending niche categories for a content empire.
+    Focus on high CPC and low competition.
+    ${existingList}
+    
+    Return STRICT JSON ONLY: { "niches": [ { "name": "string", "justification": "string", "cpc": "string", "difficulty": "string", "keywords": ["string"] } ] }`;
+    
+    const { content: response, reasoning } = await generateAIText(prompt, AgentType.TREND_RESEARCH);
+    if (reasoning) await this.addLog(AgentType.TREND_RESEARCH, `Neural Reasoning: ${reasoning.substring(0, 300)}...`, "info", userId);
     const data = await this.parseAIResponse(response);
     
     if (!data.niches || !Array.isArray(data.niches)) {
       throw new Error("AI response missing niches array");
     }
 
-    await this.addLog(AgentType.TREND_RESEARCH, `Found ${data.niches.length} trending niches. High potential detected.`, "success", userId);
+    await this.addLog(AgentType.TREND_RESEARCH, `Identified ${data.niches.length} high-authority vectors.`, "success", userId);
     
     // Auto-validate the first one to start the chain
     await this.addTask(AgentType.NICHE_VALIDATION, { niches: data.niches, userId });
@@ -242,7 +258,8 @@ export class AgentOrchestrator {
     const prompt = `From these niches: ${JSON.stringify(niches)}, select the single best authority category.
     Return STRICT JSON: { "name": "string", "justification": "string", "keywords": ["string"], "audience": "string" }`;
     
-    const response = await generateAIText(prompt, AgentType.NICHE_VALIDATION);
+    const { content: response, reasoning } = await generateAIText(prompt, AgentType.NICHE_VALIDATION);
+    if (reasoning) await this.addLog(AgentType.NICHE_VALIDATION, `Neural Reasoning: ${reasoning.substring(0, 300)}...`, "info", userId);
     const data = await this.parseAIResponse(response);
     
     await this.addLog(AgentType.NICHE_VALIDATION, `Selected niche: ${data.name}. Strategy: Vertical Authority.`, "success", userId);
@@ -256,7 +273,8 @@ export class AgentOrchestrator {
     const prompt = `Build a semantic keyword map for: ${JSON.stringify(niche)}.
     Return STRICT JSON: { "clusters": [ { "topic": "string", "keywords": ["string"] } ] }`;
     
-    const response = await generateAIText(prompt, AgentType.KEYWORD_RESEARCH);
+    const { content: response, reasoning } = await generateAIText(prompt, AgentType.KEYWORD_RESEARCH);
+    if (reasoning) await this.addLog(AgentType.KEYWORD_RESEARCH, `Neural Reasoning: ${reasoning.substring(0, 300)}...`, "info", userId);
     const data = await this.parseAIResponse(response);
     
     await this.addLog(AgentType.KEYWORD_RESEARCH, `Generated ${data.clusters?.length || 0} semantic silos.`, "success", userId);
@@ -270,7 +288,8 @@ export class AgentOrchestrator {
     const prompt = `Design an SEO Silo for category: ${niche.name}. Use clusters: ${JSON.stringify(clusters)}.
     Return STRICT JSON: { "siloStructure": "string", "topics": ["string"] }`;
     
-    const response = await generateAIText(prompt, AgentType.SEO_STRATEGIST);
+    const { content: response, reasoning } = await generateAIText(prompt, AgentType.SEO_STRATEGIST);
+    if (reasoning) await this.addLog(AgentType.SEO_STRATEGIST, `Neural Reasoning: ${reasoning.substring(0, 300)}...`, "info", userId);
     const data = await this.parseAIResponse(response);
     
     await this.addLog(AgentType.SEO_STRATEGIST, "Silo structure finalized. Architecture ready for deployment.", "success", userId);
@@ -306,7 +325,8 @@ export class AgentOrchestrator {
     await this.addLog(AgentType.UI_UX_DESIGNER, "Generating visual tokens for category...", "process", userId);
     const prompt = `Return design tokens for ${category.name}. Focus on aesthetic identity.
     Return STRICT JSON: { "primaryColor": "string", "secondaryColor": "string", "accentColor": "string", "icon": "string" }`;
-    const response = await generateAIText(prompt, AgentType.UI_UX_DESIGNER);
+    const { content: response, reasoning } = await generateAIText(prompt, AgentType.UI_UX_DESIGNER);
+    if (reasoning) await this.addLog(AgentType.UI_UX_DESIGNER, `Neural Reasoning: ${reasoning.substring(0, 300)}...`, "info", userId);
     const style = await this.parseAIResponse(response);
     
     await this.addLog(AgentType.UI_UX_DESIGNER, `Visual identity mapped. Accent: ${style.accentColor}.`, "success", userId);
@@ -329,26 +349,53 @@ export class AgentOrchestrator {
 
   private async runContentWriter(payload: any) {
     const { category, userId } = payload;
-    await this.addLog(AgentType.CONTENT_WRITER, `Generating High-Authority Editorial Articles for /cat/${category.slug}...`, "process", userId);
+    await this.addLog(AgentType.CONTENT_WRITER, `Architecting High-Authority Editorial Articles for ${category.name}...`, "process", userId);
     
-    const prompt = `Write 3 mass-authority articles for ${category.name}. Markdown. Long-form.
+    const prompt = `Write 3 high-authority, SEO-optimized editorial articles for a website about "${category.name}".
+    Focus on informational intent and user-value. Length should be significant.
+    
     Return STRICT JSON: { "articles": [ { "title": "string", "content": "string", "slug": "string", "excerpt": "string" } ] }`;
     
-    const response = await generateAIText(prompt, AgentType.CONTENT_WRITER);
+    const { content: response, reasoning } = await generateAIText(prompt, AgentType.CONTENT_WRITER);
+    if (reasoning) await this.addLog(AgentType.CONTENT_WRITER, `Neural Reasoning: ${reasoning.substring(0, 500)}...`, "info", userId);
     const data = await this.parseAIResponse(response);
     
     if (userId) {
       const store = this.getUserStore(userId);
       const catStore = store.categories[category.slug];
+      if (!catStore) throw new Error("Category lost during generation");
       if (!catStore.posts) catStore.posts = {};
       for (const article of data.articles) {
         catStore.posts[article.slug] = { ...article, createdAt: new Date().toISOString() };
       }
     }
 
-    await this.addLog(AgentType.CONTENT_WRITER, `Published ${data.articles?.length || 0} authority insights.`, "success", userId);
-    await this.addTask(AgentType.INTERNAL_LINKING, { category, articles: data.articles, userId });
+    await this.addLog(AgentType.CONTENT_WRITER, `Published ${data.articles?.length || 0} authority articles. Node expansion complete.`, "success", userId);
+    await this.addTask(AgentType.IMAGE_GENERATOR, { category, articles: data.articles, userId });
     return { count: data.articles?.length || 0 };
+  }
+
+  private async runImageGenerator(payload: any) {
+    const { category, articles, userId } = payload;
+    await this.addLog(AgentType.IMAGE_GENERATOR, `Generating semantic visuals for ${articles.length} articles...`, "process", userId);
+    
+    for (const article of articles) {
+      // Use pollinations for fast placeholder images
+      const prompt = encodeURIComponent(`high quality professional blog hero image for ${article.title}, ${category.name}, aesthetic, digital art`);
+      const imageUrl = `https://image.pollinations.ai/prompt/${prompt}?width=1024&height=768&nologo=true&private=true&enhance=true`;
+      
+      if (userId) {
+        const store = this.getUserStore(userId);
+        const catStore = store.categories[category.slug];
+        if (catStore && catStore.posts[article.slug]) {
+          catStore.posts[article.slug].imageUrl = imageUrl;
+        }
+      }
+    }
+
+    await this.addLog(AgentType.IMAGE_GENERATOR, "Visual assets attached to authority nodes.", "success", userId);
+    await this.addTask(AgentType.INTERNAL_LINKING, { category, articles, userId });
+    return { status: "images_generated" };
   }
 
   private async runInternalLinking(payload: any) {

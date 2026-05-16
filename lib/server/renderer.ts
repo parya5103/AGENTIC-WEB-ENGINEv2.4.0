@@ -6,16 +6,18 @@ export const generateEmpireHtml = (category: any, posts: any[] = [], post?: any)
   const content = post ? `
     <article class="max-w-4xl mx-auto py-20 px-8">
       <nav class="mb-12 text-sm font-bold uppercase tracking-widest text-gray-400">
-        <a href="/" class="hover:text-black">Empire</a> / 
+        <a href="/empire" class="hover:text-black">Empire Home</a> / 
         <a href="/cat/${category.slug}" class="hover:text-black">${category.name}</a>
       </nav>
       <h1 class="text-5xl md:text-7xl font-black tracking-tight mb-12">${post.title}</h1>
+      ${post.imageUrl ? `<img src="${post.imageUrl}" class="w-full h-auto rounded-[40px] mb-12 shadow-2xl border border-gray-100" alt="${post.title}" />` : ""}
       <div class="prose prose-xl max-w-none prose-slate">
         ${post.content.replace(/\n/g, "<br>")}
       </div>
     </article>
   ` : `
     <header class="py-32 px-8 text-center max-w-5xl mx-auto space-y-8">
+      <div class="w-full h-24 bg-gray-50 border border-dashed border-gray-200 rounded-xl flex items-center justify-center text-[10px] font-black uppercase text-gray-300 tracking-widest mb-12">AdSense Deployment Area (Top Slot)</div>
       <span class="text-[10px] font-bold tracking-[0.3em] uppercase text-gray-400">Authority Category</span>
       <h1 class="text-6xl md:text-9xl font-black tracking-tighter">${category.name}</h1>
       <p class="text-xl text-gray-500 max-w-2xl mx-auto leading-relaxed font-medium font-serif italic">
@@ -27,10 +29,15 @@ export const generateEmpireHtml = (category: any, posts: any[] = [], post?: any)
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-16">
         ${posts.map((p: any) => `
           <a href="/cat/${category.slug}/${p.slug}" class="group block space-y-8">
-            <div class="aspect-[16/10] bg-gray-50 rounded-[40px] overflow-hidden border border-gray-100 flex items-center justify-center p-12">
-               <div class="text-center">
-                 <div class="text-[10px] font-black uppercase tracking-widest text-gray-300 mb-2">Internal Index</div>
-                 <div class="text-2xl font-black tracking-tight group-hover:scale-105 transition-transform duration-700">${p.title}</div>
+            <div class="aspect-[16/10] bg-gray-50 rounded-[40px] overflow-hidden border border-gray-100 flex items-center justify-center relative">
+               ${p.imageUrl ? 
+                  `<img src="${p.imageUrl}" class="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-transform duration-1000" />
+                   <div class="absolute inset-0 bg-black/40 group-hover:bg-black/20 transition-colors duration-500"></div>` 
+                  : ''
+               }
+               <div class="text-center relative z-10 px-8">
+                 <div class="text-[10px] font-black uppercase tracking-widest text-white/60 mb-2">Internal Index</div>
+                 <div class="text-2xl font-black tracking-tight text-white group-hover:scale-105 transition-transform duration-700">${p.title}</div>
                </div>
             </div>
             <div class="space-y-4">
@@ -45,6 +52,9 @@ export const generateEmpireHtml = (category: any, posts: any[] = [], post?: any)
         `).join("")}
       </div>
     </main>
+    <section class="max-w-7xl mx-auto px-8 mb-32">
+       <div class="w-full h-64 bg-gray-50 border border-dashed border-gray-200 rounded-[40px] flex items-center justify-center text-[10px] font-black uppercase text-gray-300 tracking-[0.4em]">High-Yield Monetization Node (Content Slot)</div>
+    </section>
   `;
 
   return `<!DOCTYPE html>
@@ -60,15 +70,16 @@ export const generateEmpireHtml = (category: any, posts: any[] = [], post?: any)
         h1, h2, h3 { letter-spacing: -0.05em; }
         .font-serif { font-family: 'Baskervville', serif; }
     </style>
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-EMPIRE" crossorigin="anonymous"></script>
 </head>
 <body class="antialiased">
     <nav class="p-10 flex justify-between items-center border-b border-gray-50">
-        <a href="/" class="text-2xl font-black tracking-tighter uppercase group flex items-center gap-3">
+        <a href="/empire" class="text-2xl font-black tracking-tighter uppercase group flex items-center gap-3">
           <div class="w-8 h-8 bg-black rounded-lg group-hover:rotate-45 transition-transform duration-500"></div>
           ${siteTitle}
         </a>
         <div class="hidden lg:flex gap-12 text-[10px] font-black uppercase tracking-[0.2em] text-gray-400">
-            <a href="/" class="hover:text-black">Trends</a>
+            <a href="/empire" class="hover:text-black">Trends</a>
             <a href="#" class="hover:text-black">Intelligence</a>
             <a href="#" class="hover:text-black">Capital</a>
             <a href="#" class="hover:text-black">Authority</a>
@@ -85,6 +96,10 @@ export const generateEmpireHtml = (category: any, posts: any[] = [], post?: any)
           <a href="#" class="opacity-50 hover:opacity-100">Legal</a>
         </div>
         <p class="text-gray-600 text-[9px] tracking-[0.4em] uppercase font-bold">© 2026 NicheFlow Global Holdings. All assets AI-managed.</p>
+        <div class="mt-8 opacity-20 flex justify-center items-center gap-4">
+           <svg class="w-4 h-4 fill-current" viewBox="0 0 24 24"><path d="M24 22.525H0l12-21.05 12 21.05z"/></svg>
+           <span class="text-[8px] font-black tracking-widest uppercase">Powered by Vercel Edge Runtime</span>
+        </div>
     </footer>
 </body>
 </html>`;
@@ -145,6 +160,10 @@ export const generateHomeHtml = (categories: any[]) => {
     <footer class="bg-black text-white py-32 px-10 text-center">
         <div class="text-5xl font-black mb-12 tracking-tighter uppercase italic">${siteTitle}</div>
         <p class="text-gray-600 text-[9px] tracking-[0.4em] uppercase font-bold">© 2026 NicheFlow Global Holdings. All assets AI-managed.</p>
+        <div class="mt-8 opacity-20 flex justify-center items-center gap-4">
+           <svg class="w-4 h-4 fill-current" viewBox="0 0 24 24"><path d="M24 22.525H0l12-21.05 12 21.05z"/></svg>
+           <span class="text-[8px] font-black tracking-widest uppercase">Powered by Vercel Edge Runtime</span>
+        </div>
     </footer>
 </body>
 </html>`;

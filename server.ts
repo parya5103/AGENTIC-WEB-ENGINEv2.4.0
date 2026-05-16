@@ -98,13 +98,12 @@ async function startServer() {
   const io = new Server(httpServer, { cors: { origin: "*" } });
 
   const PORT = process.env.PORT || 3000;
-  let activeUser: string | null = null;
+  let activeUser: string = "local-user-admin"; // Locked to admin as requested "me only"
   let loopRunning = false;
 
   const orchestrator = new AgentOrchestrator(memoryStore as any, io);
 
   async function loadState() {
-     if (!activeUser) return;
      const store = getUserStore(activeUser);
      const categories = Object.values(store.categories);
      io.emit("init", sanitizeForEmit({ categories, loopRunning, globalStats: store.stats }));
@@ -113,21 +112,39 @@ async function startServer() {
   setInterval(() => { orchestrator.processQueue().catch(e => console.error(e)); }, 5000);
   setInterval(() => { saveToDisk().catch(e => console.error(e)); }, 15000);
 
-  // API Routes
+  // --- API Routes ---
   app.get("/api/state", async (req, res) => {
-    const userId = req.query.userId as string;
-    if (userId) { activeUser = userId; }
-    if (!activeUser) return res.json({ categories: [], loopRunning, globalStats: {} });
-    const store = getUserStore(activeUser);
-    res.json(sanitizeForEmit({ categories: Object.values(store.categories), loopRunning, globalStats: store.stats }));
+    try {
+      const userId = (req.query.userId as string) || activeUser;
+      if (userId && userId !== "undefined") activeUser = userId;
+      
+      const store = getUserStore(activeUser);
+      const payload = { 
+        categories: Object.values(store.categories), 
+        loopRunning, 
+        globalStats: store.stats 
+      };
+      
+      res.json(sanitizeForEmit(payload));
+    } catch (e: any) {
+      console.error("[API] State fetch failed:", e);
+      res.status(500).json({ error: "Internal Server Error", details: e.message });
+    }
   });
 
   app.post("/api/start", async (req, res) => {
-    const { userId } = req.body;
-    if (userId) activeUser = userId;
-    loopRunning = true;
-    if (activeUser) await orchestrator.addTask(AgentType.TREND_RESEARCH, { userId: activeUser });
-    res.json({ status: "started" });
+    try {
+      const userId = req.body.userId || activeUser;
+      if (userId && userId !== "undefined") activeUser = userId;
+      
+      loopRunning = true;
+      const store = getUserStore(activeUser);
+      const existingNiches = Object.values(store.categories).map((c: any) => c.name);
+      await orchestrator.addTask(AgentType.TREND_RESEARCH, { userId: activeUser, existingNiches });
+      res.json({ status: "started" });
+    } catch (e: any) {
+      res.status(500).json({ error: e.message });
+    }
   });
 
   app.post("/api/stop", (req, res) => {
@@ -137,17 +154,15 @@ async function startServer() {
 
   app.post("/api/categories/:slug/refresh", async (req, res) => {
     const { slug } = req.params;
-    const { userId } = req.body;
-    if (!userId) return res.status(400).json({ error: "Missing identity" });
+    const userId = req.body.userId || activeUser;
     await orchestrator.addTask(AgentType.CONTENT_WRITER, { category: { slug }, userId });
     res.json({ status: "refresh_queued" });
   });
 
   app.delete("/api/categories/:slug", async (req, res) => {
     const { slug } = req.params;
-    const { userId } = req.query;
-    if (!userId) return res.status(400).json({ error: "Missing identity" });
-    const store = getUserStore(userId as string);
+    const userId = (req.query.userId as string) || activeUser;
+    const store = getUserStore(userId);
     delete store.categories[slug];
     res.json({ status: "deleted" });
   });
@@ -167,12 +182,12 @@ async function startServer() {
     res.json({ status: "manual_forge_queued" });
   });
 
-  app.post("/api/stats/reset", async (req, res) => {
-    const { userId } = req.body;
-    if (!userId) return res.status(400).json({ error: "Missing identity" });
+  // Reset stats to prevent dashboard ghosting
+  app.get("/api/stats/reset", (req, res) => {
+    const userId = (req.query.userId as string) || activeUser;
     const store = getUserStore(userId);
-    store.stats = { totalRevenue: 0, totalTraffic: 0, history: [] };
-    res.json({ status: "reset" });
+    store.stats = { totalRevenue: 0.00, totalTraffic: 0, activeCategories: 0, autoDeploy: true, dailyGrowth: 1.2, simulationEnabled: true, history: [] };
+    res.json({ status: "ok" });
   });
 
   // Empire Dynamic Serving
@@ -184,8 +199,16 @@ async function startServer() {
     });
   });
 
-  app.get("/", async (req, res, next) => {
-    if (req.headers.accept?.includes("application/json")) return next();
+  // Catch-all for API to prevent HTML fallback (CRITICAL)
+  app.all("/api/*", (req, res) => {
+    res.status(404).json({ 
+      error: "API Endpoint Not Found", 
+      path: req.originalUrl,
+      help: "Ensure the URL is correct and includes /api/ prefix if intended for JSON data."
+    });
+  });
+
+  app.get("/empire", async (req, res) => {
     if (!activeUser) return res.send(generateHomeHtml([]));
     const store = getUserStore(activeUser);
     res.send(generateHomeHtml(Object.values(store.categories)));
@@ -217,8 +240,9 @@ async function startServer() {
     const vite = await createViteServer({ server: { middlewareMode: true }, appType: "spa" });
     app.use(vite.middlewares);
   } else {
-    app.use(express.static(path.join(__dirname, "dist")));
-    app.get("*", (req, res) => res.sendFile(path.join(__dirname, "dist", "index.html")));
+    const distPath = path.join(process.cwd(), "dist");
+    app.use(express.static(distPath));
+    app.get("*", (req, res) => res.sendFile(path.join(distPath, "index.html")));
   }
 
   io.on("connection", (socket) => {
