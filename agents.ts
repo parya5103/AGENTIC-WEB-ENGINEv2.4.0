@@ -395,12 +395,20 @@ export class AgentOrchestrator {
 
   private async runImageGenerator(payload: any) {
     const { category, articles, userId } = payload;
-    await this.addLog(AgentType.IMAGE_GENERATOR, `Generating semantic visuals for ${articles.length} articles...`, "process", userId);
+    await this.addLog(AgentType.IMAGE_GENERATOR, `Generating local placeholder visuals for ${articles.length} articles...`, "process", userId);
     
     for (const article of articles) {
-      // Use pollinations for fast placeholder images
-      const prompt = encodeURIComponent(`high quality professional blog hero image for ${article.title}, ${category.name}, aesthetic, digital art`);
-      const imageUrl = `https://image.pollinations.ai/prompt/${prompt}?width=1024&height=768&nologo=true&private=true&enhance=true`;
+      // Generate a local SVG placeholder image to avoid external API dependencies
+      const title = article.title.replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+      const svg = `
+        <svg width="1024" height="768" xmlns="http://www.w3.org/2000/svg">
+          <rect width="100%" height="100%" fill="#2d3748" />
+          <text x="50%" y="50%" font-family="system-ui, sans-serif" font-size="48" font-weight="bold" fill="#e2e8f0" text-anchor="middle" dominant-baseline="middle">
+            ${title}
+          </text>
+        </svg>
+      `.trim();
+      const imageUrl = `data:image/svg+xml;base64,${Buffer.from(svg).toString('base64')}`;
       
       if (userId) {
         const store = this.getUserStore(userId);
@@ -411,7 +419,7 @@ export class AgentOrchestrator {
       }
     }
 
-    await this.addLog(AgentType.IMAGE_GENERATOR, "Visual assets attached to authority nodes.", "success", userId);
+    await this.addLog(AgentType.IMAGE_GENERATOR, "Local visual assets attached to authority nodes.", "success", userId);
     await this.addTask(AgentType.INTERNAL_LINKING, { category, articles, userId });
     return { status: "images_generated" };
   }
