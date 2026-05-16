@@ -1,0 +1,95 @@
+version: '3.8'
+
+services:
+  app:
+    build: .
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production
+      - OLLAMA_API_URL=http://ollama:11434/api/chat
+      - OLLAMA_MODEL=qwen2.5:7b
+    depends_on:
+      - ollama
+      - database
+    restart: unless-stopped
+    networks:
+      - nicheflow-network
+
+  ollama:
+    image: ollama/ollama:latest
+    ports:
+      - "11434:11434"
+    volumes:
+      - ollama_data:/root/.ollama
+    restart: unless-stopped
+    networks:
+      - nicheflow-network
+
+  database:
+    # Using Postgres as a placeholder. In this codebase, it uses an in-memory/JSON storage
+    # but a multi-container architecture requests a database.
+    image: postgres:15-alpine
+    environment:
+      POSTGRES_USER: nicheflow
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: nicheflow_db
+    volumes:
+      - db_data:/var/lib/postgresql/data
+    restart: unless-stopped
+    networks:
+      - nicheflow-network
+
+  seo-worker:
+    build: .
+    environment:
+      - NODE_ENV=production
+      - WORKER_TYPE=seo
+      - OLLAMA_API_URL=http://ollama:11434/api/chat
+    depends_on:
+      - app
+      - ollama
+    restart: unless-stopped
+    networks:
+      - nicheflow-network
+    # In a real setup, this would run a specific worker script.
+    # We run the main app as a placeholder for the worker.
+    command: ["npm", "start"]
+
+  content-worker:
+    build: .
+    environment:
+      - NODE_ENV=production
+      - WORKER_TYPE=content
+      - OLLAMA_API_URL=http://ollama:11434/api/chat
+    depends_on:
+      - app
+      - ollama
+    restart: unless-stopped
+    networks:
+      - nicheflow-network
+    # In a real setup, this would run a specific worker script.
+    # We run the main app as a placeholder for the worker.
+    command: ["npm", "start"]
+
+  scheduler:
+    build: .
+    environment:
+      - NODE_ENV=production
+      - WORKER_TYPE=scheduler
+    depends_on:
+      - app
+    restart: unless-stopped
+    networks:
+      - nicheflow-network
+    # In a real setup, this would run a cron/scheduler script.
+    # We run the main app as a placeholder for the scheduler.
+    command: ["npm", "start"]
+
+networks:
+  nicheflow-network:
+    driver: bridge
+
+volumes:
+  ollama_data:
+  db_data:

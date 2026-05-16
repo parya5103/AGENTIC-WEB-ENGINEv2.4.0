@@ -324,9 +324,9 @@ export default function App() {
                               {categories.map((cat) => (
                                 <div key={cat.slug} className="p-6 rounded-3xl border border-gray-100 hover:border-blue-200 transition-all group bg-gray-50/30 overflow-hidden relative">
                                     {/* Visual Background Preview */}
-                                    {cat.posts && Object.values(cat.posts).length > 0 && Object.values(cat.posts)[0].imageUrl && (
+                                    {cat.posts && Object.values(cat.posts).length > 0 && (Object.values(cat.posts)[0] as any).imageUrl && (
                                       <div className="absolute top-0 right-0 w-32 h-32 -mr-8 -mt-8 opacity-20 blur-xl group-hover:opacity-40 transition-opacity">
-                                        <img src={Object.values(cat.posts)[0].imageUrl} className="w-full h-full object-cover rounded-full" />
+                                        <img src={(Object.values(cat.posts)[0] as any).imageUrl} className="w-full h-full object-cover rounded-full" />
                                       </div>
                                     )}
 

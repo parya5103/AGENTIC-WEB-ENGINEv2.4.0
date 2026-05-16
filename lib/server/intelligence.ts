@@ -79,6 +79,38 @@ export async function generateAIText(prompt: string, agentName: string = "System
 
   const strategies = [
     {
+      name: "Ollama",
+      execute: async (): Promise<AIResponse | null> => {
+        try {
+          const ollamaUrl = process.env.OLLAMA_API_URL || "http://ollama:11434/api/chat";
+          const ollamaModel = process.env.OLLAMA_MODEL || "qwen2.5:7b";
+          const response = await fetch(ollamaUrl, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+              model: ollamaModel,
+              messages: [
+                { role: "system", content: `You are NicheFlow ${agentName} Agent. Return strictly valid JSON.` },
+                { role: "user", content: prompt }
+              ],
+              stream: false,
+              format: "json"
+            })
+          });
+          if (!response.ok) return null;
+          const data = await response.json();
+          return { content: data.message.content || "" };
+        } catch (e: any) {
+          console.log(`[Intelligence] Ollama connection failed. Fallback triggered.`);
+          return null;
+        }
+      },
+      handleError: () => {}
+    },
+
+    {
       name: "NVIDIA Nemotron",
       execute: async (): Promise<AIResponse | null> => {
         if (!nvidia) return null;
