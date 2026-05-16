@@ -201,24 +201,42 @@ export class AgentOrchestrator {
     } catch (e) {
       console.warn("[Parser] JSON parse failed, attempting recovery...", e);
       
-      // Basic recovery for common truncation/errors
+      // Robust recovery for truncated JSON
       let fixed = cleanResponse;
+      const stack: string[] = [];
+      let inString = false;
+      let escapeNext = false;
       
-      // Balance braces/brackets
-      const count = (str: string, char: string) => (str.match(new RegExp(`\\${char}`, 'g')) || []).length;
-      
-      const openBraces = count(fixed, '{');
-      const closeBraces = count(fixed, '}');
-      for (let i = 0; i < openBraces - closeBraces; i++) fixed += '}';
-      
-      const openBrackets = count(fixed, '[');
-      const closeBrackets = count(fixed, ']');
-      for (let i = 0; i < openBrackets - closeBrackets; i++) fixed += ']';
+      for (let i = 0; i < fixed.length; i++) {
+        const char = fixed[i];
+        if (escapeNext) {
+          escapeNext = false;
+          continue;
+        }
+        if (char === '\\') {
+          escapeNext = true;
+          continue;
+        }
+        if (char === '"') {
+          inString = !inString;
+          continue;
+        }
+        if (!inString) {
+          if (char === '{') stack.push('}');
+          else if (char === '[') stack.push(']');
+          else if (char === '}' && stack[stack.length - 1] === '}') stack.pop();
+          else if (char === ']' && stack[stack.length - 1] === ']') stack.pop();
+        }
+      }
+
+      if (inString) fixed += '"';
+      while (stack.length > 0) {
+        fixed += stack.pop();
+      }
 
       try {
         return JSON.parse(fixed);
       } catch (e2) {
-        // Last ditch effort: regex for field extraction if structure is totally broken
         console.error("[Parser] Recovery failed. Original length:", response.length);
         throw new Error("AI response was malformed. Please try again.");
       }

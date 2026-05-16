@@ -1,0 +1,714 @@
+{
+  "users": {
+    "local-user-admin": {
+      "categories": {
+        "ai-powered-legal-document-automation": {
+          "slug": "ai-powered-legal-document-automation",
+          "name": "AI-Powered Legal Document Automation",
+          "description": "This niche offers the highest CPC ($12.35) and remains low‑competition while tapping into a rapidly growing legal‑tech market. The specificity of AI‑driven document creation and contract automation provides ample depth for establishing expertise, attracting a dedicated audience of small‑business owners, contract managers, and legal tech startups looking for cost‑efficient solutions.",
+          "createdAt": "2026-05-16T13:26:32.244Z",
+          "status": "developed",
+          "posts": {},
+          "style": {
+            "primaryColor": "#004E98",
+            "secondaryColor": "#BFD8FD",
+            "accentColor": "#F7931E",
+            "icon": "law-automation"
+          }
+        }
+      },
+      "logs": [
+        {
+          "id": "LOG-1778937892235",
+          "agent": "Trend Research",
+          "message": "Scanning real-time global markets for untapped high-CPC opportunities...",
+          "type": "process",
+          "timestamp": "2026-05-16T13:24:52.235Z"
+        },
+        {
+          "id": "LOG-1778937904854",
+          "agent": "Trend Research",
+          "message": "Identified 3 high-authority vectors.",
+          "type": "success",
+          "timestamp": "2026-05-16T13:25:04.854Z"
+        },
+        {
+          "id": "LOG-1778937907236",
+          "agent": "Niche Validation",
+          "message": "Validating category expansion potential...",
+          "type": "process",
+          "timestamp": "2026-05-16T13:25:07.236Z"
+        },
+        {
+          "id": "LOG-1778937929678",
+          "agent": "Niche Validation",
+          "message": "Selected niche: AI-Powered Legal Document Automation. Strategy: Vertical Authority.",
+          "type": "success",
+          "timestamp": "2026-05-16T13:25:29.678Z"
+        },
+        {
+          "id": "LOG-1778937932240",
+          "agent": "Keyword Research",
+          "message": "Extracting semantic clusters for AI-Powered Legal Document Automation...",
+          "type": "process",
+          "timestamp": "2026-05-16T13:25:32.240Z"
+        },
+        {
+          "id": "LOG-1778937960520",
+          "agent": "Keyword Research",
+          "message": "Generated 5 semantic silos.",
+          "type": "success",
+          "timestamp": "2026-05-16T13:26:00.520Z"
+        },
+        {
+          "id": "LOG-1778937962242",
+          "agent": "SEO Strategist",
+          "message": "Designing category Silo architecture...",
+          "type": "process",
+          "timestamp": "2026-05-16T13:26:02.242Z"
+        },
+        {
+          "id": "LOG-1778937989611",
+          "agent": "SEO Strategist",
+          "message": "Silo structure finalized. Architecture ready for deployment.",
+          "type": "success",
+          "timestamp": "2026-05-16T13:26:29.611Z"
+        },
+        {
+          "id": "LOG-1778937992244",
+          "agent": "Website Architect",
+          "message": "Allocating new category path: /cat/ai-powered-legal-document-automation",
+          "type": "process",
+          "timestamp": "2026-05-16T13:26:32.244Z"
+        },
+        {
+          "id": "LOG-1778937997245",
+          "agent": "UI/UX Designer",
+          "message": "Generating visual tokens for category...",
+          "type": "process",
+          "timestamp": "2026-05-16T13:26:37.245Z"
+        },
+        {
+          "id": "LOG-1778938002246",
+          "agent": "Trend Research",
+          "message": "Scanning real-time global markets for untapped high-CPC opportunities...",
+          "type": "process",
+          "timestamp": "2026-05-16T13:26:42.246Z"
+        },
+        {
+          "id": "LOG-1778938002748",
+          "agent": "Trend Research",
+          "message": "Task TASK-1778937997668-a7bs8uf5d failed: All AI clusters offline.",
+          "type": "error",
+          "timestamp": "2026-05-16T13:26:42.748Z"
+        },
+        {
+          "id": "LOG-1778938007246",
+          "agent": "Trend Research",
+          "message": "Scanning real-time global markets for untapped high-CPC opportunities...",
+          "type": "process",
+          "timestamp": "2026-05-16T13:26:47.246Z"
+        },
+        {
+          "id": "LOG-1778938007740",
+          "agent": "Trend Research",
+          "message": "Task TASK-1778937997668-a7bs8uf5d failed: All AI clusters offline.",
+          "type": "error",
+          "timestamp": "2026-05-16T13:26:47.740Z"
+        },
+        {
+          "id": "LOG-1778938012246",
+          "agent": "Trend Research",
+          "message": "Scanning real-time global markets for untapped high-CPC opportunities...",
+          "type": "process",
+          "timestamp": "2026-05-16T13:26:52.246Z"
+        },
+        {
+          "id": "LOG-1778938012548",
+          "agent": "Trend Research",
+          "message": "Task TASK-1778937997668-a7bs8uf5d failed: All AI clusters offline.",
+          "type": "error",
+          "timestamp": "2026-05-16T13:26:52.548Z"
+        },
+        {
+          "id": "LOG-1778938016677",
+          "agent": "UI/UX Designer",
+          "message": "Visual identity mapped. Accent: #F7931E.",
+          "type": "success",
+          "timestamp": "2026-05-16T13:26:56.677Z"
+        },
+        {
+          "id": "LOG-1778938017247",
+          "agent": "Full-Stack Developer",
+          "message": "Deploying dynamic logic nodes...",
+          "type": "process",
+          "timestamp": "2026-05-16T13:26:57.247Z"
+        },
+        {
+          "id": "LOG-1778938017247",
+          "agent": "Full-Stack Developer",
+          "message": "Backend routes and logic provisioned.",
+          "type": "success",
+          "timestamp": "2026-05-16T13:26:57.247Z"
+        },
+        {
+          "id": "LOG-1778938022246",
+          "agent": "Content Writer",
+          "message": "Architecting High-Authority Editorial Articles for AI-Powered Legal Document Automation...",
+          "type": "process",
+          "timestamp": "2026-05-16T13:27:02.246Z"
+        },
+        {
+          "id": "LOG-1778938064617",
+          "agent": "Content Writer",
+          "message": "Task TASK-1778938017247-cw7713ywh failed: AI response was malformed. Please try again.",
+          "type": "error",
+          "timestamp": "2026-05-16T13:27:44.617Z"
+        },
+        {
+          "id": "LOG-1778938067249",
+          "agent": "Content Writer",
+          "message": "Architecting High-Authority Editorial Articles for AI-Powered Legal Document Automation...",
+          "type": "process",
+          "timestamp": "2026-05-16T13:27:47.249Z"
+        },
+        {
+          "id": "LOG-1778938067732",
+          "agent": "Content Writer",
+          "message": "Task TASK-1778938017247-cw7713ywh failed: AI response was malformed. Please try again.",
+          "type": "error",
+          "timestamp": "2026-05-16T13:27:47.732Z"
+        },
+        {
+          "id": "LOG-1778938072250",
+          "agent": "Content Writer",
+          "message": "Architecting High-Authority Editorial Articles for AI-Powered Legal Document Automation...",
+          "type": "process",
+          "timestamp": "2026-05-16T13:27:52.250Z"
+        },
+        {
+          "id": "LOG-1778938072458",
+          "agent": "Content Writer",
+          "message": "Task TASK-1778938017247-cw7713ywh failed: AI response was malformed. Please try again.",
+          "type": "error",
+          "timestamp": "2026-05-16T13:27:52.458Z"
+        },
+        {
+          "id": "LOG-1778946489141",
+          "agent": "Trend Research",
+          "message": "Scanning real-time global markets for untapped high-CPC opportunities...",
+          "type": "process",
+          "timestamp": "2026-05-16T15:48:09.142Z"
+        },
+        {
+          "id": "LOG-1778946505062",
+          "agent": "Trend Research",
+          "message": "Task TASK-1778946485170-q17vo167v failed: All AI clusters offline.",
+          "type": "error",
+          "timestamp": "2026-05-16T15:48:25.062Z"
+        },
+        {
+          "id": "LOG-1778946509142",
+          "agent": "Trend Research",
+          "message": "Scanning real-time global markets for untapped high-CPC opportunities...",
+          "type": "process",
+          "timestamp": "2026-05-16T15:48:29.142Z"
+        },
+        {
+          "id": "LOG-1778946532198",
+          "agent": "Trend Research",
+          "message": "Task TASK-1778946485170-q17vo167v failed: All AI clusters offline.",
+          "type": "error",
+          "timestamp": "2026-05-16T15:48:52.198Z"
+        },
+        {
+          "id": "LOG-1778946534144",
+          "agent": "Trend Research",
+          "message": "Scanning real-time global markets for untapped high-CPC opportunities...",
+          "type": "process",
+          "timestamp": "2026-05-16T15:48:54.144Z"
+        },
+        {
+          "id": "LOG-1778946564720",
+          "agent": "Trend Research",
+          "message": "Task TASK-1778946485170-q17vo167v failed: All AI clusters offline.",
+          "type": "error",
+          "timestamp": "2026-05-16T15:49:24.720Z"
+        }
+      ],
+      "stats": {
+        "totalRevenue": 0,
+        "totalTraffic": 0,
+        "activeCategories": 0,
+        "autoDeploy": true,
+        "dailyGrowth": 1.2,
+        "simulationEnabled": true,
+        "history": []
+      },
+      "tasks": {
+        "TASK-1778937889923-wm45bmwg5": {
+          "id": "TASK-1778937889923-wm45bmwg5",
+          "agent": "Trend Research",
+          "status": "completed",
+          "retryCount": 0,
+          "payload": {
+            "userId": "local-user-admin",
+            "existingNiches": []
+          },
+          "createdAt": "2026-05-16T13:24:49.923Z",
+          "result": {
+            "niches": [
+              {
+                "name": "Personal Finance for Gen Z",
+                "justification": "Rising interest in financial independence among Gen Z, lower keyword competition, high ad revenue for budgeting tools and student loan advice.",
+                "cpc": "$9.75",
+                "difficulty": "low",
+                "keywords": [
+                  "student loan refinancing",
+                  "budgeting app for teenagers",
+                  "credit score tips for Gen Z",
+                  "financial independence plan",
+                  "first credit card advice"
+                ]
+              },
+              {
+                "name": "Remote Work Software Alternatives",
+                "justification": "Remote work boom, demand for cost‑effective tools, lower competition for niche software solutions, high CPC for collaboration links.",
+                "cpc": "$8.20",
+                "difficulty": "low",
+                "keywords": [
+                  "remote collaboration tools",
+                  "virtual office software 2024",
+                  "team communication platforms",
+                  "video conferencing alternatives",
+                  "team project management free"
+                ]
+              },
+              {
+                "name": "AI-Powered Legal Document Automation",
+                "justification": "Legal industry adopting AI, high advertiser spend on document creation, niche keywords with limited competition, strong click rates.",
+                "cpc": "$12.35",
+                "difficulty": "low",
+                "keywords": [
+                  "legal document generator AI",
+                  "contract automation software",
+                  "AI legal assistant",
+                  "online legal forms creator",
+                  "intelligent contract drafting"
+                ]
+              }
+            ]
+          },
+          "updatedAt": "2026-05-16T13:25:04.855Z"
+        },
+        "TASK-1778937904855-g9i7vc4eh": {
+          "id": "TASK-1778937904855-g9i7vc4eh",
+          "agent": "Niche Validation",
+          "status": "completed",
+          "retryCount": 0,
+          "payload": {
+            "niches": [
+              {
+                "name": "Personal Finance for Gen Z",
+                "justification": "Rising interest in financial independence among Gen Z, lower keyword competition, high ad revenue for budgeting tools and student loan advice.",
+                "cpc": "$9.75",
+                "difficulty": "low",
+                "keywords": [
+                  "student loan refinancing",
+                  "budgeting app for teenagers",
+                  "credit score tips for Gen Z",
+                  "financial independence plan",
+                  "first credit card advice"
+                ]
+              },
+              {
+                "name": "Remote Work Software Alternatives",
+                "justification": "Remote work boom, demand for cost‑effective tools, lower competition for niche software solutions, high CPC for collaboration links.",
+                "cpc": "$8.20",
+                "difficulty": "low",
+                "keywords": [
+                  "remote collaboration tools",
+                  "virtual office software 2024",
+                  "team communication platforms",
+                  "video conferencing alternatives",
+                  "team project management free"
+                ]
+              },
+              {
+                "name": "AI-Powered Legal Document Automation",
+                "justification": "Legal industry adopting AI, high advertiser spend on document creation, niche keywords with limited competition, strong click rates.",
+                "cpc": "$12.35",
+                "difficulty": "low",
+                "keywords": [
+                  "legal document generator AI",
+                  "contract automation software",
+                  "AI legal assistant",
+                  "online legal forms creator",
+                  "intelligent contract drafting"
+                ]
+              }
+            ],
+            "userId": "local-user-admin"
+          },
+          "createdAt": "2026-05-16T13:25:04.855Z",
+          "result": {
+            "name": "AI-Powered Legal Document Automation",
+            "justification": "This niche offers the highest CPC ($12.35) and remains low‑competition while tapping into a rapidly growing legal‑tech market. The specificity of AI‑driven document creation and contract automation provides ample depth for establishing expertise, attracting a dedicated audience of small‑business owners, contract managers, and legal tech startups looking for cost‑efficient solutions.",
+            "keywords": [
+              "legal document generator AI",
+              "contract automation software",
+              "AI legal assistant"
+            ],
+            "audience": "small‑business owners, contract managers, legal professionals, freelance contractors, and legal‑tech startups"
+          },
+          "updatedAt": "2026-05-16T13:25:29.679Z"
+        },
+        "TASK-1778937929678-svcvj0hgy": {
+          "id": "TASK-1778937929678-svcvj0hgy",
+          "agent": "Keyword Research",
+          "status": "completed",
+          "retryCount": 0,
+          "payload": {
+            "niche": {
+              "name": "AI-Powered Legal Document Automation",
+              "justification": "This niche offers the highest CPC ($12.35) and remains low‑competition while tapping into a rapidly growing legal‑tech market. The specificity of AI‑driven document creation and contract automation provides ample depth for establishing expertise, attracting a dedicated audience of small‑business owners, contract managers, and legal tech startups looking for cost‑efficient solutions.",
+              "keywords": [
+                "legal document generator AI",
+                "contract automation software",
+                "AI legal assistant"
+              ],
+              "audience": "small‑business owners, contract managers, legal professionals, freelance contractors, and legal‑tech startups"
+            },
+            "userId": "local-user-admin"
+          },
+          "createdAt": "2026-05-16T13:25:29.678Z",
+          "result": {
+            "clusters": [
+              {
+                "topic": "AI‑driven legal document creation",
+                "keywords": [
+                  "legal document generator AI",
+                  "AI contract drafting tool",
+                  "AI document automation",
+                  "smart legal document builder"
+                ]
+              },
+              {
+                "topic": "Contract automation solutions",
+                "keywords": [
+                  "contract automation software",
+                  "automated contract lifecycle",
+                  "contract management AI",
+                  "digital contract workflow"
+                ]
+              },
+              {
+                "topic": "AI legal assistant",
+                "keywords": [
+                  "AI legal assistant",
+                  "legal AI chatbot",
+                  "intelligent legal assistant"
+                ]
+              },
+              {
+                "topic": "Small business legal compliance",
+                "keywords": [
+                  "legal tech for small businesses",
+                  "affordable legal software",
+                  "legal compliance tools for SMB"
+                ]
+              },
+              {
+                "topic": "Freelancer & startup legal solutions",
+                "keywords": [
+                  "legal solutions for freelancers",
+                  "startup legal tech",
+                  "contract templates AI"
+                ]
+              }
+            ]
+          },
+          "updatedAt": "2026-05-16T13:26:00.520Z"
+        },
+        "TASK-1778937960520-x906rebn6": {
+          "id": "TASK-1778937960520-x906rebn6",
+          "agent": "SEO Strategist",
+          "status": "completed",
+          "retryCount": 0,
+          "payload": {
+            "niche": {
+              "name": "AI-Powered Legal Document Automation",
+              "justification": "This niche offers the highest CPC ($12.35) and remains low‑competition while tapping into a rapidly growing legal‑tech market. The specificity of AI‑driven document creation and contract automation provides ample depth for establishing expertise, attracting a dedicated audience of small‑business owners, contract managers, and legal tech startups looking for cost‑efficient solutions.",
+              "keywords": [
+                "legal document generator AI",
+                "contract automation software",
+                "AI legal assistant"
+              ],
+              "audience": "small‑business owners, contract managers, legal professionals, freelance contractors, and legal‑tech startups"
+            },
+            "clusters": [
+              {
+                "topic": "AI‑driven legal document creation",
+                "keywords": [
+                  "legal document generator AI",
+                  "AI contract drafting tool",
+                  "AI document automation",
+                  "smart legal document builder"
+                ]
+              },
+              {
+                "topic": "Contract automation solutions",
+                "keywords": [
+                  "contract automation software",
+                  "automated contract lifecycle",
+                  "contract management AI",
+                  "digital contract workflow"
+                ]
+              },
+              {
+                "topic": "AI legal assistant",
+                "keywords": [
+                  "AI legal assistant",
+                  "legal AI chatbot",
+                  "intelligent legal assistant"
+                ]
+              },
+              {
+                "topic": "Small business legal compliance",
+                "keywords": [
+                  "legal tech for small businesses",
+                  "affordable legal software",
+                  "legal compliance tools for SMB"
+                ]
+              },
+              {
+                "topic": "Freelancer & startup legal solutions",
+                "keywords": [
+                  "legal solutions for freelancers",
+                  "startup legal tech",
+                  "contract templates AI"
+                ]
+              }
+            ],
+            "userId": "local-user-admin"
+          },
+          "createdAt": "2026-05-16T13:26:00.520Z",
+          "result": {
+            "siloStructure": "AI‑Powered Legal Document Automation\n├─ AI‑driven legal document creation (legal document generator AI, AI contract drafting tool, AI document automation, smart legal document builder)\n├─ Contract automation solutions (contract automation software, automated contract lifecycle, contract management AI, digital contract workflow)\n├─ AI legal assistant (AI legal assistant, legal AI chatbot, intelligent legal assistant)\n├─ Small business legal compliance (legal tech for small businesses, affordable legal software, legal compliance tools for SMB)\n├─ Freelancer & startup legal solutions (legal solutions for freelancers, startup legal tech, contract templates AI)",
+            "topics": [
+              "AI‑driven legal document creation",
+              "Contract automation solutions",
+              "AI legal assistant",
+              "Small business legal compliance",
+              "Freelancer & startup legal solutions"
+            ]
+          },
+          "updatedAt": "2026-05-16T13:26:29.611Z"
+        },
+        "TASK-1778937989611-3158dr4fo": {
+          "id": "TASK-1778937989611-3158dr4fo",
+          "agent": "Website Architect",
+          "status": "completed",
+          "retryCount": 0,
+          "payload": {
+            "architecture": {
+              "siloStructure": "AI‑Powered Legal Document Automation\n├─ AI‑driven legal document creation (legal document generator AI, AI contract drafting tool, AI document automation, smart legal document builder)\n├─ Contract automation solutions (contract automation software, automated contract lifecycle, contract management AI, digital contract workflow)\n├─ AI legal assistant (AI legal assistant, legal AI chatbot, intelligent legal assistant)\n├─ Small business legal compliance (legal tech for small businesses, affordable legal software, legal compliance tools for SMB)\n├─ Freelancer & startup legal solutions (legal solutions for freelancers, startup legal tech, contract templates AI)",
+              "topics": [
+                "AI‑driven legal document creation",
+                "Contract automation solutions",
+                "AI legal assistant",
+                "Small business legal compliance",
+                "Freelancer & startup legal solutions"
+              ]
+            },
+            "niche": {
+              "name": "AI-Powered Legal Document Automation",
+              "justification": "This niche offers the highest CPC ($12.35) and remains low‑competition while tapping into a rapidly growing legal‑tech market. The specificity of AI‑driven document creation and contract automation provides ample depth for establishing expertise, attracting a dedicated audience of small‑business owners, contract managers, and legal tech startups looking for cost‑efficient solutions.",
+              "keywords": [
+                "legal document generator AI",
+                "contract automation software",
+                "AI legal assistant"
+              ],
+              "audience": "small‑business owners, contract managers, legal professionals, freelance contractors, and legal‑tech startups"
+            },
+            "clusters": [
+              {
+                "topic": "AI‑driven legal document creation",
+                "keywords": [
+                  "legal document generator AI",
+                  "AI contract drafting tool",
+                  "AI document automation",
+                  "smart legal document builder"
+                ]
+              },
+              {
+                "topic": "Contract automation solutions",
+                "keywords": [
+                  "contract automation software",
+                  "automated contract lifecycle",
+                  "contract management AI",
+                  "digital contract workflow"
+                ]
+              },
+              {
+                "topic": "AI legal assistant",
+                "keywords": [
+                  "AI legal assistant",
+                  "legal AI chatbot",
+                  "intelligent legal assistant"
+                ]
+              },
+              {
+                "topic": "Small business legal compliance",
+                "keywords": [
+                  "legal tech for small businesses",
+                  "affordable legal software",
+                  "legal compliance tools for SMB"
+                ]
+              },
+              {
+                "topic": "Freelancer & startup legal solutions",
+                "keywords": [
+                  "legal solutions for freelancers",
+                  "startup legal tech",
+                  "contract templates AI"
+                ]
+              }
+            ],
+            "userId": "local-user-admin"
+          },
+          "createdAt": "2026-05-16T13:26:29.611Z",
+          "result": {
+            "slug": "ai-powered-legal-document-automation",
+            "name": "AI-Powered Legal Document Automation",
+            "description": "This niche offers the highest CPC ($12.35) and remains low‑competition while tapping into a rapidly growing legal‑tech market. The specificity of AI‑driven document creation and contract automation provides ample depth for establishing expertise, attracting a dedicated audience of small‑business owners, contract managers, and legal tech startups looking for cost‑efficient solutions.",
+            "createdAt": "2026-05-16T13:26:32.244Z",
+            "status": "architected",
+            "posts": {}
+          },
+          "updatedAt": "2026-05-16T13:26:32.245Z"
+        },
+        "TASK-1778937992244-sw8bdjlby": {
+          "id": "TASK-1778937992244-sw8bdjlby",
+          "agent": "UI/UX Designer",
+          "status": "completed",
+          "retryCount": 0,
+          "payload": {
+            "category": {
+              "slug": "ai-powered-legal-document-automation",
+              "name": "AI-Powered Legal Document Automation",
+              "description": "This niche offers the highest CPC ($12.35) and remains low‑competition while tapping into a rapidly growing legal‑tech market. The specificity of AI‑driven document creation and contract automation provides ample depth for establishing expertise, attracting a dedicated audience of small‑business owners, contract managers, and legal tech startups looking for cost‑efficient solutions.",
+              "createdAt": "2026-05-16T13:26:32.244Z",
+              "status": "architected",
+              "posts": {}
+            },
+            "userId": "local-user-admin"
+          },
+          "createdAt": "2026-05-16T13:26:32.245Z",
+          "result": {
+            "primaryColor": "#004E98",
+            "secondaryColor": "#BFD8FD",
+            "accentColor": "#F7931E",
+            "icon": "law-automation"
+          },
+          "updatedAt": "2026-05-16T13:26:56.678Z"
+        },
+        "TASK-1778937997668-a7bs8uf5d": {
+          "id": "TASK-1778937997668-a7bs8uf5d",
+          "agent": "Trend Research",
+          "status": "failed",
+          "retryCount": 3,
+          "payload": {
+            "userId": "local-user-admin",
+            "existingNiches": [
+              "AI-Powered Legal Document Automation"
+            ]
+          },
+          "createdAt": "2026-05-16T13:26:37.668Z",
+          "error": "All AI clusters offline.",
+          "updatedAt": "2026-05-16T13:26:52.547Z"
+        },
+        "TASK-1778938016677-ercp2toyj": {
+          "id": "TASK-1778938016677-ercp2toyj",
+          "agent": "Full-Stack Developer",
+          "status": "completed",
+          "retryCount": 0,
+          "payload": {
+            "category": {
+              "slug": "ai-powered-legal-document-automation",
+              "name": "AI-Powered Legal Document Automation",
+              "description": "This niche offers the highest CPC ($12.35) and remains low‑competition while tapping into a rapidly growing legal‑tech market. The specificity of AI‑driven document creation and contract automation provides ample depth for establishing expertise, attracting a dedicated audience of small‑business owners, contract managers, and legal tech startups looking for cost‑efficient solutions.",
+              "createdAt": "2026-05-16T13:26:32.244Z",
+              "status": "architected",
+              "posts": {}
+            },
+            "style": {
+              "primaryColor": "#004E98",
+              "secondaryColor": "#BFD8FD",
+              "accentColor": "#F7931E",
+              "icon": "law-automation"
+            },
+            "userId": "local-user-admin"
+          },
+          "createdAt": "2026-05-16T13:26:56.677Z",
+          "result": {
+            "slug": "ai-powered-legal-document-automation",
+            "name": "AI-Powered Legal Document Automation",
+            "description": "This niche offers the highest CPC ($12.35) and remains low‑competition while tapping into a rapidly growing legal‑tech market. The specificity of AI‑driven document creation and contract automation provides ample depth for establishing expertise, attracting a dedicated audience of small‑business owners, contract managers, and legal tech startups looking for cost‑efficient solutions.",
+            "createdAt": "2026-05-16T13:26:32.244Z",
+            "status": "developed",
+            "posts": {},
+            "style": {
+              "primaryColor": "#004E98",
+              "secondaryColor": "#BFD8FD",
+              "accentColor": "#F7931E",
+              "icon": "law-automation"
+            }
+          },
+          "updatedAt": "2026-05-16T13:26:57.247Z"
+        },
+        "TASK-1778938017247-cw7713ywh": {
+          "id": "TASK-1778938017247-cw7713ywh",
+          "agent": "Content Writer",
+          "status": "failed",
+          "retryCount": 3,
+          "payload": {
+            "category": {
+              "slug": "ai-powered-legal-document-automation",
+              "name": "AI-Powered Legal Document Automation",
+              "description": "This niche offers the highest CPC ($12.35) and remains low‑competition while tapping into a rapidly growing legal‑tech market. The specificity of AI‑driven document creation and contract automation provides ample depth for establishing expertise, attracting a dedicated audience of small‑business owners, contract managers, and legal tech startups looking for cost‑efficient solutions.",
+              "createdAt": "2026-05-16T13:26:32.244Z",
+              "status": "developed",
+              "posts": {},
+              "style": {
+                "primaryColor": "#004E98",
+                "secondaryColor": "#BFD8FD",
+                "accentColor": "#F7931E",
+                "icon": "law-automation"
+              }
+            },
+            "userId": "local-user-admin"
+          },
+          "createdAt": "2026-05-16T13:26:57.247Z",
+          "error": "AI response was malformed. Please try again.",
+          "updatedAt": "2026-05-16T13:27:52.458Z"
+        },
+        "TASK-1778946485170-q17vo167v": {
+          "id": "TASK-1778946485170-q17vo167v",
+          "agent": "Trend Research",
+          "status": "failed",
+          "retryCount": 3,
+          "payload": {
+            "userId": "local-user-admin",
+            "existingNiches": [
+              "AI-Powered Legal Document Automation"
+            ]
+          },
+          "createdAt": "2026-05-16T15:48:05.171Z",
+          "error": "All AI clusters offline.",
+          "updatedAt": "2026-05-16T15:49:24.720Z"
+        }
+      }
+    }
+  }
+}
