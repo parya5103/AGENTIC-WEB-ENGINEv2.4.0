@@ -234,6 +234,20 @@
           "message": "Task TASK-1778946485170-q17vo167v failed: All AI clusters offline.",
           "type": "error",
           "timestamp": "2026-05-16T15:49:24.720Z"
+        },
+        {
+          "id": "LOG-1778955573661",
+          "agent": "Trend Research",
+          "message": "Scanning real-time global markets for untapped high-CPC opportunities...",
+          "type": "process",
+          "timestamp": "2026-05-16T18:19:33.662Z"
+        },
+        {
+          "id": "LOG-1778955590301",
+          "agent": "Trend Research",
+          "message": "Task TASK-1778955570598-syt9cgiqq failed: All AI clusters offline.",
+          "type": "error",
+          "timestamp": "2026-05-16T18:19:50.301Z"
         }
       ],
       "stats": {
@@ -707,6 +721,21 @@
           "createdAt": "2026-05-16T15:48:05.171Z",
           "error": "All AI clusters offline.",
           "updatedAt": "2026-05-16T15:49:24.720Z"
+        },
+        "TASK-1778955570598-syt9cgiqq": {
+          "id": "TASK-1778955570598-syt9cgiqq",
+          "agent": "Trend Research",
+          "status": "pending",
+          "retryCount": 1,
+          "payload": {
+            "userId": "local-user-admin",
+            "existingNiches": [
+              "AI-Powered Legal Document Automation"
+            ]
+          },
+          "createdAt": "2026-05-16T18:19:30.599Z",
+          "error": "All AI clusters offline.",
+          "updatedAt": "2026-05-16T18:19:50.301Z"
         }
       }
     }
