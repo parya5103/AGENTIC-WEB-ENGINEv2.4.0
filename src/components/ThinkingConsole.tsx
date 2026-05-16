@@ -14,6 +14,24 @@ interface ThinkingConsoleProps {
   onClose: () => void;
 }
 
+// ⚡ Bolt Optimization: Wrap LogItem in React.memo()
+// Streaming 50+ logs per render drops frames. Wrapping this in memo ensures
+// React only diffs the newest appended log element, preventing O(n) rendering.
+const LogItem = React.memo(({ log }: { log: Log }) => {
+  return (
+    <div className="group border-b border-white/5 pb-2 last:border-0">
+      <div className="flex items-center justify-between mb-1 opacity-50">
+        <span className="text-[9px] font-bold uppercase tracking-widest text-brand">[{log.agent.replace(" Agent", "")}]</span>
+        <span className="text-[9px]">{new Date(log.timestamp).toLocaleTimeString()}</span>
+      </div>
+      <div className="flex gap-2">
+        <span className="text-white/20 select-none">❯</span>
+        <p className={log.type === 'error' ? 'text-red-400' : ''}>{log.message}<span className="thinking-cursor" /></p>
+      </div>
+    </div>
+  );
+});
+
 export const ThinkingConsole = ({ logs, onClose }: ThinkingConsoleProps) => {
   return (
     <motion.div 
@@ -37,16 +55,7 @@ export const ThinkingConsole = ({ logs, onClose }: ThinkingConsoleProps) => {
 
       <div className="flex-grow overflow-y-auto p-8 font-mono text-[13px] leading-relaxed text-gray-300 space-y-6 scrollbar-hide">
         {logs.map((log, i) => (
-          <div key={i} className="group border-b border-white/5 pb-2 last:border-0">
-            <div className="flex items-center justify-between mb-1 opacity-50">
-              <span className="text-[9px] font-bold uppercase tracking-widest text-brand">[{log.agent.replace(" Agent", "")}]</span>
-              <span className="text-[9px]">{new Date(log.timestamp).toLocaleTimeString()}</span>
-            </div>
-            <div className="flex gap-2">
-              <span className="text-white/20 select-none">❯</span>
-              <p className={log.type === 'error' ? 'text-red-400' : ''}>{log.message}<span className="thinking-cursor" /></p>
-            </div>
-          </div>
+          <LogItem key={i} log={log} />
         ))}
         {logs.length === 0 && (
             <div className="h-full flex items-center justify-center text-center">
