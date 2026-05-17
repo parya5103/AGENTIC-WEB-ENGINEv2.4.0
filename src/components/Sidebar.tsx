@@ -43,6 +43,8 @@ export const Sidebar = ({ activeTab, setActiveTab, isRunning }: SidebarProps) =>
             <button
               key={item.id}
               onClick={() => setActiveTab(item.id)}
+              aria-label={item.label}
+              aria-current={isActive ? "page" : undefined}
               className={cn(
                 "p-3 rounded-2xl transition-all relative group",
                 isActive 

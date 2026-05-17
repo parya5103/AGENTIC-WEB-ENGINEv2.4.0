@@ -79,13 +79,17 @@ export const PageHeader = ({ title, isRunning, onToggleConsole, showConsole, use
         </div>
 
         <div className="flex items-center gap-4">
-            <button className="w-10 h-10 flex items-center justify-center rounded-2xl hover:bg-gray-50 transition-all text-text-muted relative">
+            <button
+              aria-label="Notifications"
+              className="w-10 h-10 flex items-center justify-center rounded-2xl hover:bg-gray-50 transition-all text-text-muted relative"
+            >
               <Bell className="w-5 h-5" />
               <div className="absolute top-2.5 right-2.5 w-2 h-2 bg-brand rounded-full border-2 border-white" />
             </button>
             
             <button 
               onClick={onToggleConsole}
+              aria-label={showConsole ? "Hide Console" : "Show Console"}
               className={cn(
                 "w-10 h-10 flex items-center justify-center rounded-2xl transition-all",
                 showConsole ? "bg-brand text-white shadow-lg shadow-brand/20" : "text-text-muted hover:bg-gray-50"
