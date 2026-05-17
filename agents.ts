@@ -83,7 +83,7 @@ export class AgentOrchestrator {
     }
   }
 
-  private async addLog(agent: string, message: string, type: "info" | "success" | "warning" | "error" | "process" = "info", userId?: string) {
+  private addLog(agent: string, message: string, type: "info" | "success" | "warning" | "error" | "process" = "info", userId?: string) {
     const logId = `LOG-${Date.now()}`;
     const log = { id: logId, agent, message, type, timestamp: new Date().toISOString() };
     if (userId) {
@@ -175,7 +175,7 @@ export class AgentOrchestrator {
       store.tasks[task.id].updatedAt = new Date().toISOString();
       
       this.io.emit("taskStatusChange", this.sanitize({ id: task.id, status, error: errorMessage }));
-      await this.addLog(task.agent, `Task ${task.id} failed: ${errorMessage}`, "error", userId);
+      this.addLog(task.agent, `Task ${task.id} failed: ${errorMessage}`, "error", userId);
     }
   }
 
@@ -245,7 +245,7 @@ export class AgentOrchestrator {
 
   private async runTrendResearch(payload: any) {
     const { userId, existingNiches = [] } = payload;
-    await this.addLog(AgentType.TREND_RESEARCH, "Scanning real-time global markets for untapped high-CPC opportunities...", "process", userId);
+    this.addLog(AgentType.TREND_RESEARCH, "Scanning real-time global markets for untapped high-CPC opportunities...", "process", userId);
     
     const existingList = existingNiches.length > 0 ? `CRITICAL: Avoid these existing niches at all costs (DUPLICATES FORBIDDEN): ${existingNiches.join(", ")}.` : "";
     
@@ -256,14 +256,14 @@ export class AgentOrchestrator {
     Return STRICT JSON ONLY: { "niches": [ { "name": "string", "justification": "string", "cpc": "string", "difficulty": "string", "keywords": ["string"] } ] }`;
     
     const { content: response, reasoning } = await generateAIText(prompt, AgentType.TREND_RESEARCH);
-    if (reasoning) await this.addLog(AgentType.TREND_RESEARCH, `Neural Reasoning: ${reasoning.substring(0, 300)}...`, "info", userId);
+    if (reasoning) this.addLog(AgentType.TREND_RESEARCH, `Neural Reasoning: ${reasoning.substring(0, 300)}...`, "info", userId);
     const data = await this.parseAIResponse(response);
     
     if (!data.niches || !Array.isArray(data.niches)) {
       throw new Error("AI response missing niches array");
     }
 
-    await this.addLog(AgentType.TREND_RESEARCH, `Identified ${data.niches.length} high-authority vectors.`, "success", userId);
+    this.addLog(AgentType.TREND_RESEARCH, `Identified ${data.niches.length} high-authority vectors.`, "success", userId);
     
     // Auto-validate the first one to start the chain
     await this.addTask(AgentType.NICHE_VALIDATION, { niches: data.niches, userId });
@@ -272,45 +272,45 @@ export class AgentOrchestrator {
 
   private async runNicheValidation(payload: any) {
     const { niches, userId } = payload;
-    await this.addLog(AgentType.NICHE_VALIDATION, "Validating category expansion potential...", "process", userId);
+    this.addLog(AgentType.NICHE_VALIDATION, "Validating category expansion potential...", "process", userId);
     const prompt = `From these niches: ${JSON.stringify(niches)}, select the single best authority category.
     Return STRICT JSON: { "name": "string", "justification": "string", "keywords": ["string"], "audience": "string" }`;
     
     const { content: response, reasoning } = await generateAIText(prompt, AgentType.NICHE_VALIDATION);
-    if (reasoning) await this.addLog(AgentType.NICHE_VALIDATION, `Neural Reasoning: ${reasoning.substring(0, 300)}...`, "info", userId);
+    if (reasoning) this.addLog(AgentType.NICHE_VALIDATION, `Neural Reasoning: ${reasoning.substring(0, 300)}...`, "info", userId);
     const data = await this.parseAIResponse(response);
     
-    await this.addLog(AgentType.NICHE_VALIDATION, `Selected niche: ${data.name}. Strategy: Vertical Authority.`, "success", userId);
+    this.addLog(AgentType.NICHE_VALIDATION, `Selected niche: ${data.name}. Strategy: Vertical Authority.`, "success", userId);
     await this.addTask(AgentType.KEYWORD_RESEARCH, { niche: data, userId });
     return data;
   }
 
   private async runKeywordResearch(payload: any) {
     const { niche, userId } = payload;
-    await this.addLog(AgentType.KEYWORD_RESEARCH, `Extracting semantic clusters for ${niche.name}...`, "process", userId);
+    this.addLog(AgentType.KEYWORD_RESEARCH, `Extracting semantic clusters for ${niche.name}...`, "process", userId);
     const prompt = `Build a semantic keyword map for: ${JSON.stringify(niche)}.
     Return STRICT JSON: { "clusters": [ { "topic": "string", "keywords": ["string"] } ] }`;
     
     const { content: response, reasoning } = await generateAIText(prompt, AgentType.KEYWORD_RESEARCH);
-    if (reasoning) await this.addLog(AgentType.KEYWORD_RESEARCH, `Neural Reasoning: ${reasoning.substring(0, 300)}...`, "info", userId);
+    if (reasoning) this.addLog(AgentType.KEYWORD_RESEARCH, `Neural Reasoning: ${reasoning.substring(0, 300)}...`, "info", userId);
     const data = await this.parseAIResponse(response);
     
-    await this.addLog(AgentType.KEYWORD_RESEARCH, `Generated ${data.clusters?.length || 0} semantic silos.`, "success", userId);
+    this.addLog(AgentType.KEYWORD_RESEARCH, `Generated ${data.clusters?.length || 0} semantic silos.`, "success", userId);
     await this.addTask(AgentType.SEO_STRATEGIST, { niche, clusters: data.clusters, userId });
     return data;
   }
 
   private async runSEOStrategist(payload: any) {
     const { niche, clusters, userId } = payload;
-    await this.addLog(AgentType.SEO_STRATEGIST, "Designing category Silo architecture...", "process", userId);
+    this.addLog(AgentType.SEO_STRATEGIST, "Designing category Silo architecture...", "process", userId);
     const prompt = `Design an SEO Silo for category: ${niche.name}. Use clusters: ${JSON.stringify(clusters)}.
     Return STRICT JSON: { "siloStructure": "string", "topics": ["string"] }`;
     
     const { content: response, reasoning } = await generateAIText(prompt, AgentType.SEO_STRATEGIST);
-    if (reasoning) await this.addLog(AgentType.SEO_STRATEGIST, `Neural Reasoning: ${reasoning.substring(0, 300)}...`, "info", userId);
+    if (reasoning) this.addLog(AgentType.SEO_STRATEGIST, `Neural Reasoning: ${reasoning.substring(0, 300)}...`, "info", userId);
     const data = await this.parseAIResponse(response);
     
-    await this.addLog(AgentType.SEO_STRATEGIST, "Silo structure finalized. Architecture ready for deployment.", "success", userId);
+    this.addLog(AgentType.SEO_STRATEGIST, "Silo structure finalized. Architecture ready for deployment.", "success", userId);
     await this.addTask(AgentType.WEBSITE_ARCHITECT, { architecture: data, niche, clusters, userId });
     return data;
   }
@@ -318,7 +318,7 @@ export class AgentOrchestrator {
   private async runWebsiteArchitect(payload: any) {
     const { architecture, niche, userId } = payload;
     const slug = niche.name.toLowerCase().replace(/\s+/g, "-");
-    await this.addLog(AgentType.WEBSITE_ARCHITECT, `Allocating new category path: /cat/${slug}`, "process", userId);
+    this.addLog(AgentType.WEBSITE_ARCHITECT, `Allocating new category path: /cat/${slug}`, "process", userId);
     
     const categoryData = {
       slug,
@@ -340,34 +340,34 @@ export class AgentOrchestrator {
 
   private async runUIUXDesigner(payload: any) {
     const { category, userId } = payload;
-    await this.addLog(AgentType.UI_UX_DESIGNER, "Generating visual tokens for category...", "process", userId);
+    this.addLog(AgentType.UI_UX_DESIGNER, "Generating visual tokens for category...", "process", userId);
     const prompt = `Return design tokens for ${category.name}. Focus on aesthetic identity.
     Return STRICT JSON: { "primaryColor": "string", "secondaryColor": "string", "accentColor": "string", "icon": "string" }`;
     const { content: response, reasoning } = await generateAIText(prompt, AgentType.UI_UX_DESIGNER);
-    if (reasoning) await this.addLog(AgentType.UI_UX_DESIGNER, `Neural Reasoning: ${reasoning.substring(0, 300)}...`, "info", userId);
+    if (reasoning) this.addLog(AgentType.UI_UX_DESIGNER, `Neural Reasoning: ${reasoning.substring(0, 300)}...`, "info", userId);
     const style = await this.parseAIResponse(response);
     
-    await this.addLog(AgentType.UI_UX_DESIGNER, `Visual identity mapped. Accent: ${style.accentColor}.`, "success", userId);
+    this.addLog(AgentType.UI_UX_DESIGNER, `Visual identity mapped. Accent: ${style.accentColor}.`, "success", userId);
     await this.addTask(AgentType.FULL_STACK_DEVELOPER, { category, style, userId });
     return style;
   }
 
   private async runFullStackDeveloper(payload: any) {
     const { category, style, userId } = payload;
-    await this.addLog(AgentType.FULL_STACK_DEVELOPER, "Deploying dynamic logic nodes...", "process", userId);
+    this.addLog(AgentType.FULL_STACK_DEVELOPER, "Deploying dynamic logic nodes...", "process", userId);
     const updates = { ...category, style, status: "developed" };
     if (userId) {
       const store = this.getUserStore(userId);
       store.categories[category.slug] = { ...store.categories[category.slug], ...updates };
     }
-    await this.addLog(AgentType.FULL_STACK_DEVELOPER, "Backend routes and logic provisioned.", "success", userId);
+    this.addLog(AgentType.FULL_STACK_DEVELOPER, "Backend routes and logic provisioned.", "success", userId);
     await this.addTask(AgentType.CONTENT_WRITER, { category: updates, userId });
     return updates;
   }
 
   private async runContentWriter(payload: any) {
     const { category, userId } = payload;
-    await this.addLog(AgentType.CONTENT_WRITER, `Architecting High-Authority Editorial Articles for ${category.name}...`, "process", userId);
+    this.addLog(AgentType.CONTENT_WRITER, `Architecting High-Authority Editorial Articles for ${category.name}...`, "process", userId);
     
     const prompt = `Write 3 high-authority, SEO-optimized editorial articles for a website about "${category.name}".
     Focus on informational intent and user-value. Length should be significant.
@@ -375,7 +375,7 @@ export class AgentOrchestrator {
     Return STRICT JSON: { "articles": [ { "title": "string", "content": "string", "slug": "string", "excerpt": "string" } ] }`;
     
     const { content: response, reasoning } = await generateAIText(prompt, AgentType.CONTENT_WRITER);
-    if (reasoning) await this.addLog(AgentType.CONTENT_WRITER, `Neural Reasoning: ${reasoning.substring(0, 500)}...`, "info", userId);
+    if (reasoning) this.addLog(AgentType.CONTENT_WRITER, `Neural Reasoning: ${reasoning.substring(0, 500)}...`, "info", userId);
     const data = await this.parseAIResponse(response);
     
     if (userId) {
@@ -388,14 +388,14 @@ export class AgentOrchestrator {
       }
     }
 
-    await this.addLog(AgentType.CONTENT_WRITER, `Published ${data.articles?.length || 0} authority articles. Node expansion complete.`, "success", userId);
+    this.addLog(AgentType.CONTENT_WRITER, `Published ${data.articles?.length || 0} authority articles. Node expansion complete.`, "success", userId);
     await this.addTask(AgentType.IMAGE_GENERATOR, { category, articles: data.articles, userId });
     return { count: data.articles?.length || 0 };
   }
 
   private async runImageGenerator(payload: any) {
     const { category, articles, userId } = payload;
-    await this.addLog(AgentType.IMAGE_GENERATOR, `Generating semantic visuals for ${articles.length} articles...`, "process", userId);
+    this.addLog(AgentType.IMAGE_GENERATOR, `Generating semantic visuals for ${articles.length} articles...`, "process", userId);
     
     for (const article of articles) {
       // Use pollinations for fast placeholder images
@@ -411,35 +411,35 @@ export class AgentOrchestrator {
       }
     }
 
-    await this.addLog(AgentType.IMAGE_GENERATOR, "Visual assets attached to authority nodes.", "success", userId);
+    this.addLog(AgentType.IMAGE_GENERATOR, "Visual assets attached to authority nodes.", "success", userId);
     await this.addTask(AgentType.INTERNAL_LINKING, { category, articles, userId });
     return { status: "images_generated" };
   }
 
   private async runInternalLinking(payload: any) {
     const { category, userId } = payload;
-    await this.addLog(AgentType.INTERNAL_LINKING, "Optimizing semantic cluster linking...", "process", userId);
+    this.addLog(AgentType.INTERNAL_LINKING, "Optimizing semantic cluster linking...", "process", userId);
     await this.addTask(AgentType.MONETIZATION, { category, userId });
     return { status: "linked" };
   }
 
   private async runMonetization(payload: any) {
     const { category, userId } = payload;
-    await this.addLog(AgentType.MONETIZATION, "Injecting AdSense and Affiliate CTAs...", "process", userId);
+    this.addLog(AgentType.MONETIZATION, "Injecting AdSense and Affiliate CTAs...", "process", userId);
     await this.addTask(AgentType.AUTOMATION, { category, userId });
     return { monetized: true };
   }
 
   private async runAutomation(payload: any) {
     const { category, userId } = payload;
-    await this.addLog(AgentType.AUTOMATION, "Setting daily autonomous expansion cycle...", "process", userId);
+    this.addLog(AgentType.AUTOMATION, "Setting daily autonomous expansion cycle...", "process", userId);
     await this.addTask(AgentType.ANALYTICS, { category, userId });
     return { loop_synced: true };
   }
 
   private async runAnalytics(payload: any) {
     const { category, userId } = payload;
-    await this.addLog(AgentType.ANALYTICS, "Forecasting traffic growth...", "process", userId);
+    this.addLog(AgentType.ANALYTICS, "Forecasting traffic growth...", "process", userId);
     await this.addTask(AgentType.DEVOPS_DEPLOYMENT, { category, userId });
     return { traffic: "simulated" };
   }
@@ -447,7 +447,7 @@ export class AgentOrchestrator {
   private async runDevOpsDeployment(payload: any) {
     const { category, userId } = payload;
     const url = `/cat/${category.slug}`;
-    await this.addLog(AgentType.DEVOPS_DEPLOYMENT, `PRODUCTION UPLINK LIVE: ${url}`, "success", userId);
+    this.addLog(AgentType.DEVOPS_DEPLOYMENT, `PRODUCTION UPLINK LIVE: ${url}`, "success", userId);
     if (userId) {
       const store = this.getUserStore(userId);
       store.categories[category.slug] = { ...store.categories[category.slug], status: "live", url };
