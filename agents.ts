@@ -162,11 +162,12 @@ export class AgentOrchestrator {
       const status = retryCount >= 3 ? "failed" : "pending";
       
       let errorMessage = error.message;
-      if (errorMessage?.includes("<!DOCTYPE html>")) {
-        errorMessage = "Provider returned HTML instead of JSON (Possible API misconfiguration or outage).";
-      }
+      // Truncate first to prevent expensive .includes() on very large text bodies
       if (errorMessage?.length > 200) {
         errorMessage = errorMessage.substring(0, 197) + "...";
+      }
+      if (errorMessage?.includes("<!DOCTYPE html>")) {
+        errorMessage = "Provider returned HTML instead of JSON (Possible API misconfiguration or outage).";
       }
 
       store.tasks[task.id].status = status;
