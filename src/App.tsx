@@ -295,7 +295,7 @@ export default function App() {
              <button onClick={isRunning ? handleStop : handleStart} className={cn("px-6 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all shadow-lg", isRunning ? "bg-red-50 text-red-600 hover:bg-red-600 hover:text-white" : "bg-gray-900 text-white hover:bg-blue-600")}>
                {isRunning ? "Stop Agents" : "Run Agents"}
              </button>
-             <button onClick={logoutFromApp} className="p-2.5 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-xl transition-all"><LogOut className="w-5 h-5" /></button>
+             <button aria-label="Logout" title="Logout" onClick={logoutFromApp} className="p-2.5 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-xl transition-all"><LogOut className="w-5 h-5" /></button>
           </div>
         </header>
 
@@ -449,8 +449,9 @@ export default function App() {
                        <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest">Monetization: Google AdSense</p>
                        <div className="space-y-4">
                          <div className="space-y-2">
-                            <label className="text-[9px] font-bold text-gray-400 uppercase">Publisher ID</label>
+                            <label htmlFor="pubId" className="text-[9px] font-bold text-gray-400 uppercase">Publisher ID</label>
                             <input 
+                              id="pubId"
                               type="text" 
                               placeholder="pub-xxxxxxxxxxxxxxxx" 
                               value={adsenseInfo.pubId}
@@ -459,8 +460,9 @@ export default function App() {
                             />
                          </div>
                          <div className="space-y-2">
-                            <label className="text-[9px] font-bold text-gray-400 uppercase">Client ID (Slot)</label>
+                            <label htmlFor="slotId" className="text-[9px] font-bold text-gray-400 uppercase">Client ID (Slot)</label>
                             <input 
+                              id="slotId"
                               type="text" 
                               placeholder="xxxxxxxxxx" 
                               value={adsenseInfo.slotId}
@@ -470,7 +472,13 @@ export default function App() {
                          </div>
                          <button 
                            onClick={handleLinkAdsense}
-                           className="w-full py-3 bg-blue-600 text-white rounded-xl text-[10px] font-black uppercase tracking-widest shadow-lg hover:bg-green-600 transition-colors"
+                           disabled={globalStats.simulationEnabled}
+                           className={cn(
+                             "w-full py-3 rounded-xl text-[10px] font-black uppercase tracking-widest transition-colors",
+                             globalStats.simulationEnabled
+                               ? "bg-gray-200 text-gray-500 cursor-not-allowed shadow-none"
+                               : "bg-blue-600 text-white shadow-lg hover:bg-green-600"
+                           )}
                          >
                            {globalStats.simulationEnabled ? "ADSENSE LINKED" : "Link AdSense account"}
                          </button>
