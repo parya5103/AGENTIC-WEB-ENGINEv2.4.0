@@ -1,0 +1,12 @@
+services:
+  - type: web
+    name: ai-company-api
+    env: node
+    plan: free
+    buildCommand: npm install && npm run build
+    startCommand: npm run start
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: GROQ_API_KEY
+        sync: false # Add this securely in the Render dashboard
