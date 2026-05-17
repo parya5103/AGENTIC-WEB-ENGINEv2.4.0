@@ -87,6 +87,26 @@ interface GlobalStats {
   history: Array<{ time: string; revenue: number; traffic: number }>;
 }
 
+// ⚡ Bolt Optimization: Wrap LogItem in React.memo()
+// When new logs stream in, this prevents React from needlessly re-rendering
+// older, unchanged log entries, saving significant main-thread CPU time.
+const LogItem = React.memo(({ log }: { log: Log }) => {
+  return (
+    <div className="group flex gap-4 animate-in fade-in slide-in-from-right-4 duration-500">
+      <div className="w-0.5 bg-blue-500/20 group-hover:bg-blue-500 transition-all rounded-full shrink-0" />
+      <div className="space-y-1.5">
+          <div className="flex items-center gap-3">
+            <span className="text-[9px] font-black text-blue-400 uppercase tracking-widest italic">{log.agent.split(' ')[0]}</span>
+            <span className="text-[8px] text-gray-600 font-mono italic">@{new Date(log.timestamp).toLocaleTimeString([], { hour12: false, hour: '2-digit', minute: '2-digit' })}</span>
+          </div>
+          <p className={cn("text-xs leading-relaxed opacity-80", log.type === "error" ? "text-red-400" : log.type === "success" ? "text-green-400" : "text-gray-300")}>
+            {log.message}
+          </p>
+      </div>
+    </div>
+  );
+});
+
 export default function App() {
   const [user, setUser] = useState<User | null>(null);
   const [authLoading, setAuthLoading] = useState(true);
@@ -375,18 +395,7 @@ export default function App() {
 
                       <div className="flex-1 overflow-y-auto space-y-6 pr-2 custom-scrollbar relative z-10">
                         {logs.slice(-50).map((log, i) => (
-                            <div key={log.id || i} className="group flex gap-4 animate-in fade-in slide-in-from-right-4 duration-500">
-                              <div className="w-0.5 bg-blue-500/20 group-hover:bg-blue-500 transition-all rounded-full shrink-0" />
-                              <div className="space-y-1.5">
-                                  <div className="flex items-center gap-3">
-                                    <span className="text-[9px] font-black text-blue-400 uppercase tracking-widest italic">{log.agent.split(' ')[0]}</span>
-                                    <span className="text-[8px] text-gray-600 font-mono italic">@{new Date(log.timestamp).toLocaleTimeString([], { hour12: false, hour: '2-digit', minute: '2-digit' })}</span>
-                                  </div>
-                                  <p className={cn("text-xs leading-relaxed opacity-80", log.type === "error" ? "text-red-400" : log.type === "success" ? "text-green-400" : "text-gray-300")}>
-                                    {log.message}
-                                  </p>
-                              </div>
-                            </div>
+                            <LogItem key={log.id || i} log={log} />
                         ))}
                         <div ref={logEndRef} />
                       </div>
