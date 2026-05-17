@@ -1,20 +1,6 @@
 import React from "react";
 import { motion } from "motion/react";
-import { 
-  Rocket, 
-  Layout, 
-  BarChart3, 
-  Zap, 
-  ShieldCheck, 
-  Settings,
-  Target,
-  Brain,
-  ChevronRight,
-  LogOut,
-  HelpCircle,
-  Activity,
-  Flame
-} from "lucide-react";
+import { Rocket, BarChart3, Settings } from "lucide-react";
 import { cn } from "../lib/utils";
 
 interface SidebarProps {
