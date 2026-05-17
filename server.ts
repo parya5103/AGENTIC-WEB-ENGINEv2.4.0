@@ -95,9 +95,14 @@ async function startServer() {
   const app = express();
   app.use(express.json());
   const httpServer = createServer(app);
-  const io = new Server(httpServer, { cors: { origin: "*" } });
-
   const PORT = process.env.PORT || 3000;
+
+  const allowedOrigins = process.env.CORS_ORIGIN
+    ? process.env.CORS_ORIGIN.split(',')
+    : [`http://localhost:${PORT}`, `http://127.0.0.1:${PORT}`];
+
+  const io = new Server(httpServer, { cors: { origin: allowedOrigins } });
+
   let activeUser: string = "local-user-admin"; // Locked to admin as requested "me only"
   let loopRunning = false;
 
