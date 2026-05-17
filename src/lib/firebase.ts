@@ -51,9 +51,6 @@ export const logoutFromApp = async () => {
   listeners.forEach(cb => cb(null));
 };
 
-// Mock Firestore (not used but kept for compatibility)
-export const db = {} as any;
-
 export function handleFirestoreError(error: any, operation: string, path: string | null = null): never {
   console.error(`[Mock DS] Operation ${operation} on ${path} failed:`, error);
   throw error;
