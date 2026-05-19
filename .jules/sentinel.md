@@ -7,3 +7,8 @@
 * **Vulnerability:** Overly permissive CORS configuration on Socket.IO server (`cors: { origin: "*" }`).
 * **Risk:** Cross-Origin Resource Sharing (CORS) set to `*` allows any website to connect to the Socket.IO server. An attacker could host a malicious site, and if a user visits it, the site could communicate with the local server to extract data or perform unauthorized actions.
 * **Fix:** Restricted the `origin` to `process.env.CORS_ORIGIN` (split by commas) if provided, or otherwise restricted to local development addresses `["http://localhost:${PORT}", "http://127.0.0.1:${PORT}"]`. This prevents cross-origin attacks while allowing local functionality.
+
+## 2026-05-19 - Fix XSS Vulnerability in HTML Rendering
+**Vulnerability:** Found unescaped user inputs in `lib/server/renderer.ts` HTML templates, enabling Cross-Site Scripting (XSS) via injected scripts in category names, post titles, or contents.
+**Learning:** Manual string interpolation for generating HTML strings allows malicious payload execution without adequate input sanitization natively provided by view frameworks.
+**Prevention:** Implemented and applied a central `escapeHtml` utility to sanitize untrusted strings and replace unsafe characters (`&`, `<`, `>`, `"`, `'`) with corresponding HTML entities.
