@@ -115,13 +115,14 @@ export const PageHeader = ({ title, isRunning, onToggleConsole, showConsole, use
                  {/* Logout Dropdown Simulation */}
                  <button 
                   onClick={onLogout}
-                  className="absolute top-0 right-0 w-full h-full opacity-0 cursor-pointer z-10"
+                  className="absolute top-0 right-0 w-full h-full opacity-0 cursor-pointer z-10 focus-visible:opacity-100 focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-inset"
                   title="Logout"
+                  aria-label="Logout Dropdown Trigger"
                  />
                  <div className="absolute -bottom-2 right-0 translate-y-full w-32 bg-white border border-border rounded-xl shadow-xl p-2 opacity-0 group-hover/avatar:opacity-100 transition-all pointer-events-none group-hover/avatar:pointer-events-auto">
                     <button 
                       onClick={onLogout}
-                      className="w-full flex items-center gap-2 px-3 py-2 text-[10px] font-bold text-red-500 hover:bg-red-50 rounded-lg transition-colors"
+                      className="w-full flex items-center gap-2 px-3 py-2 text-[10px] font-bold text-red-500 hover:bg-red-50 focus-visible:ring-2 focus-visible:ring-red-500 rounded-lg transition-colors"
                     >
                       <LogOut className="w-3 h-3" />
                       Sign Out
