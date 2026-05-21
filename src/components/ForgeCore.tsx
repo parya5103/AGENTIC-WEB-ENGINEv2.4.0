@@ -123,7 +123,7 @@ export const ForgeCore = ({ onForge, isRunning, error, onClearError }: ForgeCore
               <div className="absolute top-0 right-0 w-96 h-96 bg-orange-500/5 rounded-full blur-[100px] -mr-48 -mt-48 transition-opacity opacity-0 group-hover:opacity-100" />
               
               <div className="space-y-4 relative z-10">
-                <label className="text-[10px] font-black text-white/40 uppercase tracking-[0.4em] ml-2 block">
+                <label htmlFor="seed-niche-entry" className="text-[10px] font-black text-white/40 uppercase tracking-[0.4em] ml-2 block">
                   Seed Niche Entry
                 </label>
                 <div className="relative">
@@ -131,6 +131,7 @@ export const ForgeCore = ({ onForge, isRunning, error, onClearError }: ForgeCore
                       <Zap className="w-6 h-6 text-orange-500" />
                    </div>
                    <input 
+                     id="seed-niche-entry"
                      type="text"
                      value={seed}
                      onChange={(e) => setSeed(e.target.value)}
@@ -184,10 +185,11 @@ export const ForgeCore = ({ onForge, isRunning, error, onClearError }: ForgeCore
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
                      <div className="space-y-4">
                         <div className="flex justify-between items-center px-2">
-                           <span className="text-xs font-bold text-white/60">Divergent Temp</span>
+                           <label htmlFor="divergent-temp" className="text-xs font-bold text-white/60">Divergent Temp</label>
                            <span className="text-sm font-mono font-black text-orange-500">{config.temperature.toFixed(2)}</span>
                         </div>
                         <input 
+                           id="divergent-temp"
                            type="range" 
                            min="0" 
                            max="1" 
@@ -201,10 +203,11 @@ export const ForgeCore = ({ onForge, isRunning, error, onClearError }: ForgeCore
 
                      <div className="space-y-4">
                         <div className="flex justify-between items-center px-2">
-                           <span className="text-xs font-bold text-white/60">Expansion Depth</span>
+                           <label htmlFor="expansion-depth" className="text-xs font-bold text-white/60">Expansion Depth</label>
                            <span className="text-sm font-mono font-black text-orange-500">{config.depth} Units</span>
                         </div>
                         <input 
+                           id="expansion-depth"
                            type="range" 
                            min="1" 
                            max="15" 
@@ -257,7 +260,9 @@ export const ForgeCore = ({ onForge, isRunning, error, onClearError }: ForgeCore
                     </div>
                     <button 
                       onClick={onClearError}
-                      className="p-2 hover:bg-white/5 rounded-lg transition-colors text-white/40 hover:text-white"
+                      aria-label="Clear Error"
+                      title="Clear Error"
+                      className="p-2 hover:bg-white/5 rounded-lg transition-colors text-white/40 hover:text-white focus-visible:ring-2 focus-visible:ring-white/20 focus-visible:outline-none"
                     >
                       <RotateCcw className="w-4 h-4" />
                     </button>
