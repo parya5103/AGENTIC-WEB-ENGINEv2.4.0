@@ -47,7 +47,8 @@ export const ThinkingConsole = ({ logs, onClose }: ThinkingConsoleProps) => {
         </div>
         <button 
           onClick={onClose}
-          className="text-white/40 hover:text-white transition-colors text-[10px] font-bold"
+          className="text-white/40 hover:text-white focus-visible:text-white focus-visible:ring-2 focus-visible:ring-brand rounded transition-all text-[10px] font-bold p-1"
+          aria-label="Close Console"
         >
           DISCONNECT
         </button>
