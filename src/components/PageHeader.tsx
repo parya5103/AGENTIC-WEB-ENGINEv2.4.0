@@ -68,15 +68,20 @@ export const PageHeader = ({ title, isRunning, onToggleConsole, showConsole, use
       </div>
       
       <div className="flex items-center gap-8">
-        <div className="flex items-center gap-3 px-5 py-2.5 bg-gray-50 rounded-2xl border border-border shadow-inner group/status">
+        <button
+          role="switch"
+          aria-checked={isRunning}
+          onClick={onToggleRun}
+          className="flex items-center gap-3 px-5 py-2.5 bg-gray-50 rounded-2xl border border-border shadow-inner group/status focus-visible:ring-2 focus-visible:ring-brand focus-visible:outline-none"
+        >
           <div className={cn(
-            "w-2 h-2 rounded-full ring-4 transition-all duration-500 cursor-pointer",
+            "w-2 h-2 rounded-full ring-4 transition-all duration-500",
             isRunning ? "bg-green-500 ring-green-500/10 animate-pulse" : "bg-gray-300 ring-transparent"
-          )} onClick={onToggleRun} />
+          )} />
           <span className="text-[10px] font-black uppercase tracking-widest text-text-muted group-hover/status:text-text-main transition-colors">
             {isRunning ? "Neural Handshake: Online" : "Uplink Standby"}
           </span>
-        </div>
+        </button>
 
         <div className="flex items-center gap-4">
             <button
