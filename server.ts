@@ -79,6 +79,9 @@ async function loadFromDisk() {
 }
 
 function getUserStore(userId: string) {
+  if (userId === '__proto__' || userId === 'constructor' || userId === 'prototype') {
+    throw new Error("Invalid userId");
+  }
   if (!memoryStore.users[userId]) {
     memoryStore.users[userId] = {
       categories: {},
