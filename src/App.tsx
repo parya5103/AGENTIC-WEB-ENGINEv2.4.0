@@ -449,8 +449,9 @@ export default function App() {
                        <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest">Monetization: Google AdSense</p>
                        <div className="space-y-4">
                          <div className="space-y-2">
-                            <label className="text-[9px] font-bold text-gray-400 uppercase">Publisher ID</label>
+                            <label htmlFor="adsense-pub-id" className="text-[9px] font-bold text-gray-400 uppercase">Publisher ID</label>
                             <input 
+                              id="adsense-pub-id"
                               type="text" 
                               placeholder="pub-xxxxxxxxxxxxxxxx" 
                               value={adsenseInfo.pubId}
@@ -459,8 +460,9 @@ export default function App() {
                             />
                          </div>
                          <div className="space-y-2">
-                            <label className="text-[9px] font-bold text-gray-400 uppercase">Client ID (Slot)</label>
+                            <label htmlFor="adsense-client-id" className="text-[9px] font-bold text-gray-400 uppercase">Client ID (Slot)</label>
                             <input 
+                              id="adsense-client-id"
                               type="text" 
                               placeholder="xxxxxxxxxx" 
                               value={adsenseInfo.slotId}
