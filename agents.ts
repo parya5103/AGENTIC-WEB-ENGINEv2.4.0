@@ -41,6 +41,9 @@ export class AgentOrchestrator {
   }
 
   private getUserStore(userId: string) {
+    if (userId === '__proto__' || userId === 'constructor' || userId === 'prototype') {
+      throw new Error("Invalid userId");
+    }
     if (!this.store.users[userId]) {
       this.store.users[userId] = {
         categories: {},

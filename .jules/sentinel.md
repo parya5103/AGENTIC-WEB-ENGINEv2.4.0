@@ -12,3 +12,8 @@
 **Vulnerability:** The application was dynamically interpolating user/AI-generated content directly into raw HTML strings in `lib/server/renderer.ts` without sanitization, leading to a critical Cross-Site Scripting (XSS) vulnerability.
 **Learning:** When manually constructing HTML on the server-side, string interpolation of dynamic properties (`.slug`, `.name`, `.description`, `.title`, `.excerpt`, `.imageUrl`, and `.content`) exposes the application to XSS attacks if not properly sanitized.
 **Prevention:** Always implement and use an `escapeHtml` utility to properly encode HTML entities (`&`, `<`, `>`, `"`, `'`) for any dynamic input before interpolating it into HTML templates.
+
+## 2026-05-22 - [CRITICAL] Fix Prototype Pollution via object keys
+**Vulnerability:** The application used unvalidated user input (`userId`) as a key to access and assign properties in a JavaScript object (`memoryStore.users[userId] = ...`). This allowed Prototype Pollution by using keys like `__proto__`.
+**Learning:** Never use unvalidated user input as a key to access or assign properties on plain JavaScript objects, as it can corrupt `Object.prototype` globally, leading to logic bugs or remote code execution.
+**Prevention:** Sanitize object keys by rejecting `__proto__`, `constructor`, and `prototype`. Alternatively, use `Map` instead of plain objects, or create objects with no prototype (`Object.create(null)`).
