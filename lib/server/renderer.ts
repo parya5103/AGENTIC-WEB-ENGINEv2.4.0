@@ -1,7 +1,7 @@
 
-function escapeHtml(unsafe: string): string {
-  if (typeof unsafe !== 'string') return unsafe;
-  return unsafe
+function escapeHtml(unsafe: any): string {
+  if (unsafe == null) return "";
+  return String(unsafe)
     .replace(/&/g, "&amp;")
     .replace(/</g, "&lt;")
     .replace(/>/g, "&gt;")
