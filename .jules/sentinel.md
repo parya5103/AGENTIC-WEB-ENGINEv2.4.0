@@ -12,3 +12,8 @@
 **Vulnerability:** The application was dynamically interpolating user/AI-generated content directly into raw HTML strings in `lib/server/renderer.ts` without sanitization, leading to a critical Cross-Site Scripting (XSS) vulnerability.
 **Learning:** When manually constructing HTML on the server-side, string interpolation of dynamic properties (`.slug`, `.name`, `.description`, `.title`, `.excerpt`, `.imageUrl`, and `.content`) exposes the application to XSS attacks if not properly sanitized.
 **Prevention:** Always implement and use an `escapeHtml` utility to properly encode HTML entities (`&`, `<`, `>`, `"`, `'`) for any dynamic input before interpolating it into HTML templates.
+
+## 2026-05-24 - [MEDIUM] Fix error handling and prevent information leakage
+**Vulnerability:** API endpoints were returning raw error objects (including `e.message`) directly to the client in HTTP 500 responses. Some endpoints lacked try-catch blocks entirely. This can lead to information exposure, where internal stack traces, file paths, or structural logic are leaked to users or attackers.
+**Learning:** Overly verbose error messages in production APIs provide attackers with valuable context about the backend infrastructure. It's a common anti-pattern to pass raw exception messages down to the client.
+**Prevention:** Wrap all asynchronous Express route handlers in robust `try/catch` blocks. Log the detailed error internally using a logging system (e.g., `console.error`) for debugging, but always return a sanitized, generic error message (like 'Internal Server Error') to the client.
