@@ -18,7 +18,10 @@ interface StatsGridProps {
   };
 }
 
-export const StatsGrid = ({ globalStats }: StatsGridProps) => {
+// ⚡ Bolt Optimization: Wrap StatsGrid in React.memo()
+// Prevents unnecessary re-renders of this heavy component when sibling state (like streaming logs)
+// updates frequently in App.tsx.
+export const StatsGrid = React.memo(({ globalStats }: StatsGridProps) => {
   return (
     <div className="grid grid-cols-12 gap-6">
       {/* Revenue Card */}
@@ -112,4 +115,4 @@ export const StatsGrid = ({ globalStats }: StatsGridProps) => {
       </div>
     </div>
   );
-};
+});
