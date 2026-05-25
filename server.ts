@@ -132,8 +132,9 @@ async function startServer() {
       
       res.json(sanitizeForEmit(payload));
     } catch (e: any) {
+      // Security: Do not expose internal error details (e.message) to the client. Fail securely.
       console.error("[API] State fetch failed:", e);
-      res.status(500).json({ error: "Internal Server Error", details: e.message });
+      res.status(500).json({ error: "Internal Server Error" });
     }
   });
 
@@ -148,7 +149,8 @@ async function startServer() {
       await orchestrator.addTask(AgentType.TREND_RESEARCH, { userId: activeUser, existingNiches });
       res.json({ status: "started" });
     } catch (e: any) {
-      res.status(500).json({ error: e.message });
+      console.error("[API] Start failed:", e);
+      res.status(500).json({ error: "Internal Server Error" });
     }
   });
 
@@ -158,41 +160,66 @@ async function startServer() {
   });
 
   app.post("/api/categories/:slug/refresh", async (req, res) => {
-    const { slug } = req.params;
-    const userId = req.body.userId || activeUser;
-    await orchestrator.addTask(AgentType.CONTENT_WRITER, { category: { slug }, userId });
-    res.json({ status: "refresh_queued" });
+    try {
+      const { slug } = req.params;
+      const userId = req.body.userId || activeUser;
+      await orchestrator.addTask(AgentType.CONTENT_WRITER, { category: { slug }, userId });
+      res.json({ status: "refresh_queued" });
+    } catch (e: any) {
+      console.error("[API] Refresh failed:", e);
+      res.status(500).json({ error: "Internal Server Error" });
+    }
   });
 
   app.delete("/api/categories/:slug", async (req, res) => {
-    const { slug } = req.params;
-    const userId = (req.query.userId as string) || activeUser;
-    const store = getUserStore(userId);
-    delete store.categories[slug];
-    res.json({ status: "deleted" });
+    try {
+      const { slug } = req.params;
+      const userId = (req.query.userId as string) || activeUser;
+      const store = getUserStore(userId);
+      delete store.categories[slug];
+      res.json({ status: "deleted" });
+    } catch (e: any) {
+      console.error("[API] Delete failed:", e);
+      res.status(500).json({ error: "Internal Server Error" });
+    }
   });
 
   app.post("/api/categories/:slug/strategy", async (req, res) => {
-    const { slug } = req.params;
-    const { userId } = req.body;
-    if (!userId) return res.status(400).json({ error: "Missing identity" });
-    await orchestrator.addTask(AgentType.MONETIZATION, { category: { slug }, userId });
-    res.json({ status: "strategy_queued" });
+    try {
+      const { slug } = req.params;
+      const { userId } = req.body;
+      if (!userId) return res.status(400).json({ error: "Missing identity" });
+      await orchestrator.addTask(AgentType.MONETIZATION, { category: { slug }, userId });
+      res.json({ status: "strategy_queued" });
+    } catch (e: any) {
+      console.error("[API] Strategy failed:", e);
+      res.status(500).json({ error: "Internal Server Error" });
+    }
   });
 
   app.post("/api/forge", async (req, res) => {
-    const { seed, strategy, userId, temperature, depth, engine } = req.body;
-    if (!userId) return res.status(400).json({ error: "Missing identity" });
-    await orchestrator.addTask(AgentType.NICHE_VALIDATION, { niches: [{ name: seed, justification: "Manual Override" }], userId, config: { temperature, depth, engine, strategy } });
-    res.json({ status: "manual_forge_queued" });
+    try {
+      const { seed, strategy, userId, temperature, depth, engine } = req.body;
+      if (!userId) return res.status(400).json({ error: "Missing identity" });
+      await orchestrator.addTask(AgentType.NICHE_VALIDATION, { niches: [{ name: seed, justification: "Manual Override" }], userId, config: { temperature, depth, engine, strategy } });
+      res.json({ status: "manual_forge_queued" });
+    } catch (e: any) {
+      console.error("[API] Forge failed:", e);
+      res.status(500).json({ error: "Internal Server Error" });
+    }
   });
 
   // Reset stats to prevent dashboard ghosting
   app.get("/api/stats/reset", (req, res) => {
-    const userId = (req.query.userId as string) || activeUser;
-    const store = getUserStore(userId);
-    store.stats = { totalRevenue: 0.00, totalTraffic: 0, activeCategories: 0, autoDeploy: true, dailyGrowth: 1.2, simulationEnabled: true, history: [] };
-    res.json({ status: "ok" });
+    try {
+      const userId = (req.query.userId as string) || activeUser;
+      const store = getUserStore(userId);
+      store.stats = { totalRevenue: 0.00, totalTraffic: 0, activeCategories: 0, autoDeploy: true, dailyGrowth: 1.2, simulationEnabled: true, history: [] };
+      res.json({ status: "ok" });
+    } catch (e: any) {
+      console.error("[API] Stats reset failed:", e);
+      res.status(500).json({ error: "Internal Server Error" });
+    }
   });
 
   // Empire Dynamic Serving
