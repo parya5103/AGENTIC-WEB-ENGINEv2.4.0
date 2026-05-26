@@ -125,6 +125,7 @@ export default function App() {
   const [activeTab, setActiveTab] = useState<string>("dashboard");
   const [isAuthenticating, setIsAuthenticating] = useState(false);
   const [adsenseInfo, setAdsenseInfo] = useState({ pubId: '', slotId: '' });
+  const [refreshingNodes, setRefreshingNodes] = useState<Set<string>>(new Set());
 
   const handleLinkAdsense = async () => {
     if (!user) return;
@@ -253,8 +254,17 @@ export default function App() {
 
   const handleRefresh = async (slug: string) => {
     if (!user) return;
+    setRefreshingNodes(prev => new Set(prev).add(slug));
     setLogs(prev => [...prev, { id: `UI-${Date.now()}`, agent: "UI", message: `Manual refresh triggered for /cat/${slug}`, type: "info", timestamp: new Date().toISOString() as any }]);
-    await fetch(`/api/categories/${slug}/refresh`, { method: "POST", body: JSON.stringify({ userId: user.uid }), headers: {'Content-Type': 'application/json'} });
+    try {
+      await fetch(`/api/categories/${slug}/refresh`, { method: "POST", body: JSON.stringify({ userId: user.uid }), headers: {'Content-Type': 'application/json'} });
+    } finally {
+      setRefreshingNodes(prev => {
+        const next = new Set(prev);
+        next.delete(slug);
+        return next;
+      });
+    }
   };
 
   const handleDelete = async (slug: string) => {
@@ -362,8 +372,17 @@ export default function App() {
                                         <span className="text-xs text-gray-900 truncate">${cat.analytics?.predictedRevenue || '0.00'} Yield</span>
                                       </div>
                                       <div className="flex items-center gap-2">
-                                        <button aria-label="Refresh Content" onClick={() => handleRefresh(cat.slug)} className="p-2 text-gray-400 hover:text-blue-600 hover:bg-blue-50 focus-visible:ring-2 focus-visible:ring-blue-500 rounded-lg transition-all" title="Refresh Content">
-                                          <RefreshCcw className="w-4 h-4" />
+                                        <button
+                                          aria-label="Refresh Content"
+                                          onClick={() => handleRefresh(cat.slug)}
+                                          disabled={refreshingNodes.has(cat.slug)}
+                                          className={cn(
+                                            "p-2 rounded-lg transition-all focus-visible:ring-2 focus-visible:ring-blue-500",
+                                            refreshingNodes.has(cat.slug) ? "text-blue-600 bg-blue-50 opacity-50 cursor-not-allowed" : "text-gray-400 hover:text-blue-600 hover:bg-blue-50"
+                                          )}
+                                          title="Refresh Content"
+                                        >
+                                          <RefreshCcw className={cn("w-4 h-4", refreshingNodes.has(cat.slug) && "animate-spin")} />
                                         </button>
                                         <button aria-label="Delete Node" onClick={() => handleDelete(cat.slug)} className="p-2 text-gray-400 hover:text-red-500 hover:bg-red-50 focus-visible:ring-2 focus-visible:ring-red-500 rounded-lg transition-all" title="Delete Node">
                                           <Trash2 className="w-4 h-4" />
