@@ -32,7 +32,7 @@ export const Sidebar = ({ activeTab, setActiveTab, isRunning }: SidebarProps) =>
               aria-label={item.label}
               aria-current={isActive ? "page" : undefined}
               className={cn(
-                "p-3 rounded-2xl transition-all relative group",
+                "p-3 rounded-2xl transition-all relative group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 focus-visible:ring-offset-gray-900",
                 isActive 
                   ? "bg-blue-600 text-white shadow-lg shadow-blue-600/20" 
                   : "text-gray-500 hover:text-gray-300 hover:bg-white/5"
