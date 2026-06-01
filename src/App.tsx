@@ -87,6 +87,17 @@ interface GlobalStats {
   history: Array<{ time: string; revenue: number; traffic: number }>;
 }
 
+// ⚡ Bolt Optimization: Use a for...in loop to find the first image instead of
+// generating an entire array with Object.values() multiple times per render.
+// This reduces memory allocation and garbage collection overhead.
+const getPreviewImage = (posts?: Record<string, any>) => {
+  if (!posts) return null;
+  for (const key in posts) {
+    if (posts[key]?.imageUrl) return posts[key].imageUrl;
+  }
+  return null;
+};
+
 // ⚡ Bolt Optimization: Wrap LogItem in React.memo()
 // When new logs stream in, this prevents React from needlessly re-rendering
 // older, unchanged log entries, saving significant main-thread CPU time.
@@ -344,11 +355,15 @@ export default function App() {
                               {categories.map((cat) => (
                                 <div key={cat.slug} className="p-6 rounded-3xl border border-gray-100 hover:border-blue-200 transition-all group bg-gray-50/30 overflow-hidden relative">
                                     {/* Visual Background Preview */}
-                                    {cat.posts && Object.values(cat.posts).length > 0 && (Object.values(cat.posts)[0] as any).imageUrl && (
-                                      <div className="absolute top-0 right-0 w-32 h-32 -mr-8 -mt-8 opacity-20 blur-xl group-hover:opacity-40 transition-opacity">
-                                        <img src={(Object.values(cat.posts)[0] as any).imageUrl} className="w-full h-full object-cover rounded-full" />
-                                      </div>
-                                    )}
+                                    {(() => {
+                                      const previewImage = getPreviewImage(cat.posts);
+                                      if (!previewImage) return null;
+                                      return (
+                                        <div className="absolute top-0 right-0 w-32 h-32 -mr-8 -mt-8 opacity-20 blur-xl group-hover:opacity-40 transition-opacity">
+                                          <img src={previewImage} className="w-full h-full object-cover rounded-full" />
+                                        </div>
+                                      );
+                                    })()}
 
                                     <div className="flex items-start justify-between mb-6 relative z-10">
                                       <div className="w-12 h-12 bg-white rounded-2xl flex items-center justify-center text-gray-400 group-hover:bg-blue-600 group-hover:text-white transition-all shadow-sm"><Globe className="w-6 h-6" /></div>
