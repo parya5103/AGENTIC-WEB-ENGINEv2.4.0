@@ -7,3 +7,7 @@
 ## 2024-02-14 - Input Labeling & Icon Button Accessibility
 **Learning:** Identified a pattern in custom components where standalone inputs (like range sliders and text inputs) lacked proper programmatic association with their visible labels, relying solely on sibling `span` elements or visual proximity. Additionally, custom icon-only actions lacked accessible names.
 **Action:** Ensure all visible text labels are semantically wrapped in `<label>` elements and linked to inputs via matching `htmlFor`/`id` pairs. Enforce `aria-label` and `title` on icon-only buttons while providing `focus-visible` states for keyboard navigation.
+
+## 2026-05-22 - Semantically Accessible Status Indicators
+**Learning:** Found interactive elements attached to tiny 8x8px div nodes. Semantic buttons significantly increase tap target size and natively support keyboard focus states.
+**Action:** Convert decorative indicator wrappers to `<button role="switch">` with `aria-checked` properties instead of keeping click handlers on tiny inner dots.
